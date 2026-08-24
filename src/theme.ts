@@ -3,10 +3,9 @@ import { createTheme } from '@mui/material/styles'
 /**
  * "Paper and ink" — SALAS / martevi design tokens, ported into an MUI theme.
  *
- * Source of truth for the values below: `STYLE.md` at the repo root, itself
- * distilled from the working prototype at `../salas/salas.html`. Keep the
- * two in sync — if a value changes here, update STYLE.md's color/type table
- * too, and vice versa.
+ * Distilled from the working prototype at `../salas/salas.html`. Keep this
+ * in sync with the project's design-system documentation if a token value
+ * changes on either side.
  *
  * Seven colors, two type families, one easing curve. Resist adding an
  * eighth color or a third font before checking whether an existing token

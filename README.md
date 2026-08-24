@@ -17,11 +17,6 @@ npm run build
 alongside the self-hosted fonts (`@fontsource/instrument-serif`,
 `@fontsource/inter`).
 
-See `../STYLE.md` at the repo root for the full design system this theme
-implements, and `../STEERING.md` for product rules. If a value in
-`theme.ts` and a value in `STYLE.md` disagree, `STYLE.md` is the source of
-truth — fix the theme, not the doc.
-
 ## Environment
 
 Copy `.env.example` (at the martevi root) to `.env` and adjust as needed.
@@ -51,9 +46,3 @@ builds this with the `dev` target and bind-mounts the source tree for HMR.
 
 `.github/workflows/ci.yml` runs `oxlint`, the production build, and a
 Docker build on every push/PR to `main`.
-
-## Devops steering
-
-See `../.claude/CLAUDE.md` at the martevi root for the shared devops
-conventions (repo layout, ports, CI expectations) across all three martevi
-repos, and `../STEERING.md` / `../STYLE.md` for product and design rules.
