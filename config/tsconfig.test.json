@@ -1,0 +1,17 @@
+{
+  "extends": "./tsconfig.app.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "../node_modules/.tmp/tsconfig.test.tsbuildinfo",
+    "types": ["vite/client", "node"]
+  },
+  // Everything this app config doesn't already cover: unit tests, e2e
+  // specs, and this folder's own config files.
+  "include": [
+    "../tests/unit/**/*.test.ts",
+    "../tests/unit/**/*.test.tsx",
+    "../tests/e2e/**/*.spec.ts",
+    "./vitest.config.ts",
+    "./playwright.config.ts"
+  ],
+  "exclude": []
+}
