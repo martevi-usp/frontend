@@ -1,9 +1,10 @@
 import { Box, Skeleton } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useArtworkSearch } from '../hooks/useArtworkSearch'
-import { columnsFor, packColumns } from './masonry'
+import { columnsFor, packColumns, withGroupLabels } from './masonry'
 import { ArtworkCard } from './ArtworkCard'
 import { EmptyState } from './EmptyState'
+import { MuseumLabelTile } from './MuseumLabelTile'
 import { ProviderStatusFooter } from './ProviderStatusFooter'
 
 const GAP = 16
@@ -84,7 +85,17 @@ export function ResultsGrid({ query, onQueryChange, providerId, showProvider, al
 
   const columnCount = width > 0 ? columnsFor(width) : 2
   const columnWidth = width > 0 ? (width - GAP * (columnCount - 1)) / columnCount : 0
-  const columns = packColumns(results, columnCount, (item) => columnWidth / (aspectById[item.id] ?? 1))
+  // Cross-museum search groups results with a "[MET]"-style label tile before
+  // each museum's run (fan_out_search already returns them contiguous, one
+  // provider's block at a time — see withGroupLabels); a single-museum grid
+  // has nothing to label.
+  const entries = showProvider
+    ? withGroupLabels(results)
+    : results.map((item) => ({ kind: 'item' as const, key: item.id, item }))
+  const LABEL_HEIGHT_RATIO = 0.6 // shorter than a typical card — a divider, not another artwork
+  const columns = packColumns(entries, columnCount, (entry) =>
+    entry.kind === 'label' ? columnWidth * LABEL_HEIGHT_RATIO : columnWidth / (aspectById[entry.item.id] ?? 1),
+  )
 
   return (
     <Box ref={setContainer}>
@@ -95,16 +106,25 @@ export function ResultsGrid({ query, onQueryChange, providerId, showProvider, al
       <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: `${GAP}px`, mt: 2 }}>
         {columns.map((col, i) => (
           <Box key={i} sx={{ flex: '1 1 0', minWidth: 0, display: 'flex', flexDirection: 'column', gap: `${GAP}px` }}>
-            {col.map((item) => (
-              <ArtworkCard
-                key={item.id}
-                item={item}
-                width={columnWidth}
-                aspect={aspectById[item.id] ?? 1}
-                showProvider={showProvider}
-                onAspect={(id, aspect) => setAspectById((prev) => (prev[id] ? prev : { ...prev, [id]: aspect }))}
-              />
-            ))}
+            {col.map((entry) =>
+              entry.kind === 'label' ? (
+                <MuseumLabelTile
+                  key={entry.key}
+                  providerId={entry.providerId}
+                  width={columnWidth}
+                  height={columnWidth * LABEL_HEIGHT_RATIO}
+                />
+              ) : (
+                <ArtworkCard
+                  key={entry.key}
+                  item={entry.item}
+                  width={columnWidth}
+                  aspect={aspectById[entry.item.id] ?? 1}
+                  showProvider={showProvider}
+                  onAspect={(id, aspect) => setAspectById((prev) => (prev[id] ? prev : { ...prev, [id]: aspect }))}
+                />
+              ),
+            )}
             {isLoading &&
               [1, 1.3, 0.8].map((ratio, j) => (
                 <Skeleton key={j} variant="rectangular" sx={{ bgcolor: 'paper3', width: '100%', aspectRatio: ratio }} />
