@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { columnsFor, packColumns } from '../../src/components/masonry'
+import { columnsFor, packColumns, withGroupLabels } from '../../src/components/masonry'
 
 describe('columnsFor', () => {
   it('never returns fewer than 2 columns, even at phone width', () => {
@@ -36,5 +36,27 @@ describe('packColumns', () => {
     const columns = packColumns(['only-one'], 4, () => 1)
     expect(columns).toHaveLength(4)
     expect(columns.filter((c) => c.length > 0)).toHaveLength(1)
+  })
+})
+
+describe('withGroupLabels', () => {
+  const item = (id: string, provider_id: string) => ({ id, provider_id })
+
+  it('inserts one label before each contiguous run of the same provider', () => {
+    const items = [item('met:1', 'met'), item('met:2', 'met'), item('aic:1', 'aic')]
+    const entries = withGroupLabels(items)
+    expect(entries.map((e) => e.kind)).toEqual(['label', 'item', 'item', 'label', 'item'])
+    expect(entries[0]).toMatchObject({ kind: 'label', providerId: 'met' })
+    expect(entries[3]).toMatchObject({ kind: 'label', providerId: 'aic' })
+  })
+
+  it('re-labels if the same provider reappears in a non-contiguous run', () => {
+    const items = [item('met:1', 'met'), item('aic:1', 'aic'), item('met:2', 'met')]
+    const entries = withGroupLabels(items)
+    expect(entries.map((e) => e.kind)).toEqual(['label', 'item', 'label', 'item', 'label', 'item'])
+  })
+
+  it('returns an empty list for no items', () => {
+    expect(withGroupLabels([])).toEqual([])
   })
 })

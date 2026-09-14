@@ -23,3 +23,33 @@ export function packColumns<T>(items: readonly T[], columnCount: number, heightO
   }
   return columns.map((c) => c.items)
 }
+
+export interface GroupLabel {
+  kind: 'label'
+  key: string
+  providerId: string
+}
+
+export type GroupedEntry<T> = { kind: 'item'; key: string; item: T } | GroupLabel
+
+/**
+ * Inserts a label entry immediately before each run of same-provider items,
+ * for a cross-museum grid where cards should read as "[MET] ... [AIC] ...".
+ * Assumes same-provider items already arrive contiguous (true of the
+ * backend's fan_out_search, which concatenates one provider's results at a
+ * time) — items are never reordered, just labeled.
+ */
+export function withGroupLabels<T extends { id: string; provider_id: string }>(
+  items: readonly T[],
+): GroupedEntry<T>[] {
+  const out: GroupedEntry<T>[] = []
+  let lastProvider: string | null = null
+  for (const item of items) {
+    if (item.provider_id !== lastProvider) {
+      out.push({ kind: 'label', key: `label-${item.provider_id}`, providerId: item.provider_id })
+      lastProvider = item.provider_id
+    }
+    out.push({ kind: 'item', key: item.id, item })
+  }
+  return out
+}
