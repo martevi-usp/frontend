@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { ApiError, browseArtworks, searchArtworks } from '../api/client'
+import { ApiError, browseArtworks, searchArtworks, streamFanOutSearch } from '../api/client'
 import type { ArtworkSummary, ProviderSearchStatus } from '../api/types'
+import { accumulateProviderEvent, EMPTY_STREAM_STATE } from './streamAccumulator'
 
 const DEBOUNCE_MS = 350
 const PAGE_SIZE = 24
@@ -55,11 +56,18 @@ export function useArtworkSearch(query: string, providerId?: string, allowBrowse
     }
 
     const controller = new AbortController()
+    let closeStream: (() => void) | null = null
     setState((prev) => ({
       status: 'loading',
       results: prev.status === 'success' || prev.status === 'loading' ? prev.results : [],
       providerStatus: prev.status === 'success' || prev.status === 'loading' ? prev.providerStatus : [],
     }))
+
+    // Cross-museum fan-out (no providerId, not browsing) streams over SSE so
+    // results from faster museums appear before slower/failing ones finish.
+    // Museum-scoped search (providerId set) stays on the plain REST endpoint
+    // — it's already a single fast request, streaming would add nothing.
+    const isFanOut = !browsing && !providerId
 
     const fetchIt = async () => {
       if (browsing) {
@@ -72,6 +80,23 @@ export function useArtworkSearch(query: string, providerId?: string, allowBrowse
         setState({ status: 'success', results: combined, providerStatus: data.provider_status })
         return
       }
+
+      if (isFanOut) {
+        await new Promise<void>((resolve, reject) => {
+          let acc = EMPTY_STREAM_STATE
+          closeStream = streamFanOutSearch(
+            { q: trimmed, limit: searchLimit },
+            (status, results) => {
+              acc = accumulateProviderEvent(acc, status, results)
+              setState({ status: 'success', results: acc.results, providerStatus: acc.providerStatus })
+            },
+            resolve,
+            () => reject(new Error('A busca não respondeu.')),
+          )
+        })
+        return
+      }
+
       const data = await searchArtworks({ q: trimmed, providerId, limit: searchLimit }, controller.signal)
       setState({ status: 'success', results: data.results, providerStatus: data.provider_status })
     }
@@ -90,6 +115,7 @@ export function useArtworkSearch(query: string, providerId?: string, allowBrowse
     return () => {
       clearTimeout(timer)
       controller.abort()
+      closeStream?.()
     }
   }, [trimmed, providerId, browsing, searchLimit, browseOffset])
 

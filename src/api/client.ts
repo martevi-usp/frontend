@@ -1,4 +1,4 @@
-import type { Artwork, FanOutSearchResult } from './types'
+import type { Artwork, ArtworkSummary, FanOutSearchResult, ProviderSearchStatus } from './types'
 
 const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8000'
 
@@ -50,6 +50,49 @@ export function browseArtworks(
     { provider_id: params.providerId, limit: params.limit, offset: params.offset },
     signal,
   )
+}
+
+interface ProviderEventPayload extends ProviderSearchStatus {
+  results: ArtworkSummary[]
+}
+
+/**
+ * Cross-museum search over SSE (see GET /artworks/stream): calls onProvider
+ * once per provider as it finishes (completion order, not registry order),
+ * then onDone once the backend's "done" event arrives. Returns a close
+ * function — callers must call it to stop the connection (e.g. on unmount
+ * or when a newer search supersedes this one), since EventSource does not
+ * close itself when the caller loses interest.
+ */
+export function streamFanOutSearch(
+  params: { q: string; limit: number },
+  onProvider: (status: ProviderSearchStatus, results: ArtworkSummary[]) => void,
+  onDone: () => void,
+  onError: () => void,
+): () => void {
+  const url = new URL('/artworks/stream', API_URL)
+  url.searchParams.set('q', params.q)
+  url.searchParams.set('limit', String(params.limit))
+
+  const source = new EventSource(url)
+
+  source.addEventListener('provider', (event) => {
+    const payload = JSON.parse((event as MessageEvent<string>).data) as ProviderEventPayload
+    const { results, ...status } = payload
+    onProvider(status, results)
+  })
+
+  source.addEventListener('done', () => {
+    source.close()
+    onDone()
+  })
+
+  source.onerror = () => {
+    source.close()
+    onError()
+  }
+
+  return () => source.close()
 }
 
 export function getArtwork(id: string, signal?: AbortSignal): Promise<Artwork> {
