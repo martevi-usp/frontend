@@ -1,43 +1,24 @@
-import { Box, Button, Stack, Typography } from '@mui/material'
+import { BrowserRouter, Navigate, Route, Routes, useParams } from 'react-router-dom'
+import AtriumPage from './pages/AtriumPage'
+import MuseumPage from './pages/MuseumPage'
 
-/**
- * Placeholder. This is scaffolding, not a screen — it exists only to prove
- * the theme (fonts, colors, button variants, focus ring) is wired correctly.
- * Replace with real routing/screens when the app itself starts.
- */
+// `key={providerId}` forces a fresh MuseumPage (and its default browse
+// query) if two museum pages are ever linked directly, without going
+// through the atrium in between — not reachable today, but cheap insurance.
+function MuseumRoute() {
+  const { providerId } = useParams<{ providerId: string }>()
+  return <MuseumPage key={providerId} />
+}
+
 function App() {
   return (
-    <Box
-      component="main"
-      sx={{
-        minHeight: '100svh',
-        display: 'grid',
-        placeItems: 'center',
-        px: 3,
-      }}
-    >
-      <Stack spacing={3} sx={{ maxWidth: 560, textAlign: 'center' }}>
-        <Typography variant="overline">martevi · scaffold</Typography>
-        <Typography variant="h2">
-          Papel e{' '}
-          <Box component="em" sx={{ fontStyle: 'italic', color: 'primary.main' }}>
-            tinta
-          </Box>
-        </Typography>
-        <Typography variant="body1">
-          Projeto React + TypeScript + MUI iniciado, com o tema global de{' '}
-          <code>theme.ts</code> aplicado. Nenhuma tela real ainda — só a base.
-        </Typography>
-        <Stack direction="row" spacing={2} sx={{ justifyContent: 'center' }}>
-          <Button variant="contained" color="primary">
-            Botão cheio
-          </Button>
-          <Button variant="outlined" color="primary">
-            Botão vazio
-          </Button>
-        </Stack>
-      </Stack>
-    </Box>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<AtriumPage />} />
+        <Route path="/museu/:providerId" element={<MuseumRoute />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 
