@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { columnsFor, packColumns, withGroupLabels } from '../../src/components/masonry'
+import { columnsFor, filterByActiveProviders, packColumns, withGroupLabels } from '../../src/components/masonry'
 
 describe('columnsFor', () => {
   it('never returns fewer than 2 columns, even at phone width', () => {
@@ -58,5 +58,24 @@ describe('withGroupLabels', () => {
 
   it('returns an empty list for no items', () => {
     expect(withGroupLabels([])).toEqual([])
+  })
+})
+
+describe('filterByActiveProviders', () => {
+  const item = (id: string, provider_id: string) => ({ id, provider_id })
+
+  it('keeps items whose provider is not in the inactive set', () => {
+    const items = [item('met:1', 'met'), item('aic:1', 'aic')]
+    expect(filterByActiveProviders(items, new Set(['aic']))).toEqual([item('met:1', 'met')])
+  })
+
+  it('keeps everything when nothing is inactive', () => {
+    const items = [item('met:1', 'met'), item('aic:1', 'aic')]
+    expect(filterByActiveProviders(items, new Set())).toEqual(items)
+  })
+
+  it('drops everything when every provider is inactive', () => {
+    const items = [item('met:1', 'met'), item('aic:1', 'aic')]
+    expect(filterByActiveProviders(items, new Set(['met', 'aic']))).toEqual([])
   })
 })

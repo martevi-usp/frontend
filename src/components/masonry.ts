@@ -53,3 +53,11 @@ export function withGroupLabels<T extends { id: string; provider_id: string }>(
   }
   return out
 }
+
+/** Drops items whose provider has been toggled off by the museum filter bar. */
+export function filterByActiveProviders<T extends { provider_id: string }>(
+  items: readonly T[],
+  inactive: ReadonlySet<string>,
+): T[] {
+  return items.filter((item) => !inactive.has(item.provider_id))
+}

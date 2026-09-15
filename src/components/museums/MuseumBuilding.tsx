@@ -1,5 +1,5 @@
 import type { HTMLAttributes } from 'react'
-import type { ProviderId } from '../api/types'
+import type { ProviderId } from '../../api/types'
 import { BUILDINGS } from './buildings'
 
 interface MuseumBuildingProps extends HTMLAttributes<SVGSVGElement> {

@@ -1,6 +1,7 @@
 import { Box, Typography } from '@mui/material'
+import { useState } from 'react'
 import type { ArtworkSummary } from '../api/types'
-import { getMuseum } from '../museums/catalog'
+import { getMuseum } from './museums/catalog'
 
 interface ArtworkCardProps {
   item: ArtworkSummary
@@ -12,6 +13,12 @@ interface ArtworkCardProps {
 }
 
 export function ArtworkCard({ item, width, aspect, onAspect, showProvider }: ArtworkCardProps) {
+  // Some providers' image hosts are occasionally unreachable for reasons
+  // outside martevi (e.g. AIC's IIIF host currently rejects hotlinked
+  // requests with a Cloudflare challenge) — a failed <img> load shouldn't
+  // leave a blank, unexplained tile; fall back to the same "sem imagem"
+  // placeholder used when a provider has no thumbnail at all.
+  const [imageFailed, setImageFailed] = useState(false)
   const height = width / aspect
   const title = item.title || 'Sem título' // backend sends "" (not null) when a provider has none
   const dimensionLabel =
@@ -34,7 +41,7 @@ export function ArtworkCard({ item, width, aspect, onAspect, showProvider }: Art
         '&:hover .artwork-cap': { opacity: 1, transform: 'none' },
       }}
     >
-      {item.thumbnail_url ? (
+      {item.thumbnail_url && !imageFailed ? (
         <Box
           component="img"
           src={item.thumbnail_url}
@@ -46,9 +53,7 @@ export function ArtworkCard({ item, width, aspect, onAspect, showProvider }: Art
               onAspect(item.id, img.naturalWidth / img.naturalHeight)
             }
           }}
-          onError={(e) => {
-            e.currentTarget.style.display = 'none'
-          }}
+          onError={() => setImageFailed(true)}
           sx={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }}
         />
       ) : (

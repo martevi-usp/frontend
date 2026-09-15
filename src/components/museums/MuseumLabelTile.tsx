@@ -1,6 +1,6 @@
 import { Box, Typography } from '@mui/material'
 import { Link } from 'react-router-dom'
-import { getMuseum } from '../museums/catalog'
+import { getMuseum } from './catalog'
 
 interface MuseumLabelTileProps {
   providerId: string

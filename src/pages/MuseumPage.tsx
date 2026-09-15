@@ -1,10 +1,10 @@
 import { Box, Container, Typography } from '@mui/material'
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { MuseumBuilding } from '../components/MuseumBuilding'
+import { MuseumBuilding } from '../components/museums/MuseumBuilding'
 import { ResultsGrid } from '../components/ResultsGrid'
 import { SearchBar } from '../components/SearchBar'
-import { getMuseum } from '../museums/catalog'
+import { getMuseum } from '../components/museums/catalog'
 
 export default function MuseumPage() {
   const { providerId } = useParams<{ providerId: string }>()
@@ -15,6 +15,19 @@ export default function MuseumPage() {
     return (
       <Container maxWidth={false} sx={{ px: { xs: 2, sm: 4 }, pt: 9 }}>
         <Typography variant="h3">Museu não encontrado.</Typography>
+        <Typography variant="body1" sx={{ mt: 2 }}>
+          <Box component={Link} to="/" sx={{ color: 'primary.main' }}>
+            ← voltar ao átrio
+          </Box>
+        </Typography>
+      </Container>
+    )
+  }
+
+  if (!museum.enabled) {
+    return (
+      <Container maxWidth={false} sx={{ px: { xs: 2, sm: 4 }, pt: 9 }}>
+        <Typography variant="h3">Museu fechado no momento.</Typography>
         <Typography variant="body1" sx={{ mt: 2 }}>
           <Box component={Link} to="/" sx={{ color: 'primary.main' }}>
             ← voltar ao átrio

@@ -1,10 +1,11 @@
 import { Box, Skeleton } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useArtworkSearch } from '../hooks/useArtworkSearch'
-import { columnsFor, packColumns, withGroupLabels } from './masonry'
+import { columnsFor, filterByActiveProviders, packColumns, withGroupLabels } from './masonry'
 import { ArtworkCard } from './ArtworkCard'
 import { EmptyState } from './EmptyState'
-import { MuseumLabelTile } from './MuseumLabelTile'
+import { MuseumFilterBar } from './museums/MuseumFilterBar'
+import { MuseumLabelTile } from './museums/MuseumLabelTile'
 import { ProviderStatusFooter } from './ProviderStatusFooter'
 
 const GAP = 16
@@ -30,8 +31,25 @@ export function ResultsGrid({ query, onQueryChange, providerId, showProvider, al
   const [sentinel, setSentinel] = useState<HTMLDivElement | null>(null)
   const [width, setWidth] = useState(0)
   const [aspectById, setAspectById] = useState<Record<string, number>>({})
+  // User-toggled-off museums on the cross-museum search — every museum
+  // starts active, only exceptions are tracked. Reset on a new query so
+  // leftover toggles from a previous search don't silently hide results.
+  const [inactive, setInactive] = useState<Set<string>>(new Set())
 
   const search = useArtworkSearch(query, providerId, allowBrowse)
+
+  useEffect(() => {
+    setInactive(new Set())
+  }, [query])
+
+  const toggleProvider = (id: string) => {
+    setInactive((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
+  }
 
   useEffect(() => {
     if (!container) return
@@ -42,6 +60,10 @@ export function ResultsGrid({ query, onQueryChange, providerId, showProvider, al
 
   const isLoading = search.status === 'loading'
   const { canLoadMore, loadMore } = search
+  // Browsing a museum with no query paginates open-endedly (infinite
+  // scroll) — a result count here would read as a fixed total, so it's
+  // hidden until the user actually types something to search for.
+  const browsingNoQuery = !!allowBrowse && !query.trim()
 
   // Infinite scroll: load the next page automatically once the sentinel at
   // the bottom of the grid enters the viewport, instead of a "carregar mais"
@@ -83,6 +105,19 @@ export function ResultsGrid({ query, onQueryChange, providerId, showProvider, al
     return <EmptyState kind="no-results" query={query} onSuggestion={onQueryChange} />
   }
 
+  // The museum filter bar only makes sense on the cross-museum search — a
+  // single-museum grid has exactly one provider, nothing to toggle.
+  const activeResults = showProvider ? filterByActiveProviders(results, inactive) : results
+
+  if (showProvider && !isLoading && activeResults.length === 0) {
+    return (
+      <>
+        <MuseumFilterBar providerStatus={search.providerStatus} inactive={inactive} onToggle={toggleProvider} />
+        <EmptyState kind="filtered-out" onSuggestion={onQueryChange} />
+      </>
+    )
+  }
+
   const columnCount = width > 0 ? columnsFor(width) : 2
   const columnWidth = width > 0 ? (width - GAP * (columnCount - 1)) / columnCount : 0
   // Cross-museum search groups results with a "[MET]"-style label tile before
@@ -90,8 +125,8 @@ export function ResultsGrid({ query, onQueryChange, providerId, showProvider, al
   // provider's block at a time — see withGroupLabels); a single-museum grid
   // has nothing to label.
   const entries = showProvider
-    ? withGroupLabels(results)
-    : results.map((item) => ({ kind: 'item' as const, key: item.id, item }))
+    ? withGroupLabels(activeResults)
+    : activeResults.map((item) => ({ kind: 'item' as const, key: item.id, item }))
   const LABEL_HEIGHT_RATIO = 0.6 // shorter than a typical card — a divider, not another artwork
   const columns = packColumns(entries, columnCount, (entry) =>
     entry.kind === 'label' ? columnWidth * LABEL_HEIGHT_RATIO : columnWidth / (aspectById[entry.item.id] ?? 1),
@@ -99,8 +134,11 @@ export function ResultsGrid({ query, onQueryChange, providerId, showProvider, al
 
   return (
     <Box ref={setContainer}>
+      {showProvider && (search.status === 'success' || search.status === 'loading') && (
+        <MuseumFilterBar providerStatus={search.providerStatus} inactive={inactive} onToggle={toggleProvider} />
+      )}
       {(search.status === 'success' || search.status === 'loading') && (
-        <ProviderStatusFooter providerStatus={search.providerStatus} />
+        <ProviderStatusFooter providerStatus={search.providerStatus} hideCount={browsingNoQuery} />
       )}
 
       <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: `${GAP}px`, mt: 2 }}>
