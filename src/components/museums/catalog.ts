@@ -1,4 +1,4 @@
-import type { ProviderId } from '../api/types'
+import type { ProviderId } from '../../api/types'
 
 // The backend exposes no museum-metadata endpoint (no display name,
 // location, or description per provider_id) — this is a hardcoded, factual
@@ -9,6 +9,10 @@ export interface MuseumMeta {
   name: string
   location: string
   blurb: string
+  // Required (not optional/default-true): this catalog is a short,
+  // hand-authored list, so a forgotten flag on a new entry should be a
+  // compile error, not a silent "fails open to enabled."
+  enabled: boolean
 }
 
 export const MUSEUMS: readonly MuseumMeta[] = [
@@ -18,6 +22,7 @@ export const MUSEUMS: readonly MuseumMeta[] = [
     location: 'Nova York, Estados Unidos',
     blurb:
       'Um dos maiores museus de arte do mundo, com mais de dois milhões de obras — da Antiguidade à arte contemporânea — às margens do Central Park desde 1870.',
+    enabled: true,
   },
   {
     id: 'aic',
@@ -25,6 +30,7 @@ export const MUSEUMS: readonly MuseumMeta[] = [
     location: 'Chicago, Estados Unidos',
     blurb:
       'Acervo enciclopédico à beira do Lago Michigan, com força particular no impressionismo francês e na arte americana — de Seurat a Hopper.',
+    enabled: true,
   },
   {
     id: 'cleveland',
@@ -32,6 +38,7 @@ export const MUSEUMS: readonly MuseumMeta[] = [
     location: 'Cleveland, Estados Unidos',
     blurb:
       'Museu de entrada gratuita com acervo enciclopédico de mais de 60 mil obras, incluindo uma das coleções de arte asiática mais respeitadas dos Estados Unidos.',
+    enabled: true,
   },
   {
     id: 'harvard',
@@ -39,6 +46,7 @@ export const MUSEUMS: readonly MuseumMeta[] = [
     location: 'Cambridge, Estados Unidos',
     blurb:
       'Três museus da Universidade Harvard — Fogg, Busch-Reisinger e Sackler — reunidos sob um só teto, com acervo forte em arte europeia, alemã e asiática.',
+    enabled: false,
   },
   {
     id: 'rijksmuseum',
@@ -46,6 +54,7 @@ export const MUSEUMS: readonly MuseumMeta[] = [
     location: 'Amsterdã, Países Baixos',
     blurb:
       'O museu nacional dos Países Baixos, guardião da Idade de Ouro holandesa — Rembrandt, Vermeer, Frans Hals — à beira do Museumplein.',
+    enabled: true,
   },
   {
     id: 'smithsonian',
@@ -53,6 +62,7 @@ export const MUSEUMS: readonly MuseumMeta[] = [
     location: 'Washington, Estados Unidos',
     blurb:
       'Acesso aberto ao acervo de dezenas de museus e institutos da Smithsonian, o maior complexo de museus e pesquisa do mundo.',
+    enabled: true,
   },
   {
     id: 'vam',
@@ -60,9 +70,14 @@ export const MUSEUMS: readonly MuseumMeta[] = [
     location: 'Londres, Reino Unido',
     blurb:
       'O maior museu de artes decorativas e design do mundo, com acervo que vai de têxteis e cerâmica a moda, escultura e fotografia.',
+    enabled: true,
   },
 ] as const
 
 export function getMuseum(id: string | undefined): MuseumMeta | undefined {
   return MUSEUMS.find((m) => m.id === id)
+}
+
+export function isMuseumEnabled(id: string): boolean {
+  return getMuseum(id)?.enabled ?? false
 }

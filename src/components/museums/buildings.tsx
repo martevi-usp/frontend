@@ -17,7 +17,7 @@
 // photo, run gerar_predio.py, check <id>_debug.png (a bad sky/skyline read
 // is obvious there), paste the traced <path>s in, s/stroke-width/strokeWidth/.
 import type { ComponentType } from 'react'
-import type { ProviderId } from '../api/types'
+import type { ProviderId } from '../../api/types'
 
 function MetBuilding() {
   return (

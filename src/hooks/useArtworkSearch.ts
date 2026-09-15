@@ -1,12 +1,24 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { ApiError, browseArtworks, searchArtworks, streamFanOutSearch } from '../api/client'
 import type { ArtworkSummary, ProviderSearchStatus } from '../api/types'
+import { isMuseumEnabled } from '../components/museums/catalog'
 import { accumulateProviderEvent, EMPTY_STREAM_STATE } from './streamAccumulator'
 
 const DEBOUNCE_MS = 350
 const PAGE_SIZE = 24
 const MAX_LIMIT = 100 // backend's hard cap on `limit` (Query(..., le=100)) — search mode's ceiling
 const MAX_BROWSE_ITEMS = 500 // browse mode has no backend cap (it accumulates pages); a frontend-only ceiling
+
+// A disabled museum's data never reaches component state at all — this is
+// the one place raw provider data enters the hook, so filtering here keeps
+// every consumer (grid, filter chips, provider-status footer) from ever
+// seeing it, rather than relying on each one to remember to exclude it.
+function filterEnabled(results: ArtworkSummary[], providerStatus: ProviderSearchStatus[]) {
+  return {
+    results: results.filter((r) => isMuseumEnabled(r.provider_id)),
+    providerStatus: providerStatus.filter((s) => isMuseumEnabled(s.provider_id)),
+  }
+}
 
 type SearchState =
   | { status: 'idle' }
@@ -77,7 +89,7 @@ export function useArtworkSearch(query: string, providerId?: string, allowBrowse
         )
         const combined = browseOffset === 0 ? data.results : [...browsedRef.current, ...data.results]
         browsedRef.current = combined
-        setState({ status: 'success', results: combined, providerStatus: data.provider_status })
+        setState({ status: 'success', ...filterEnabled(combined, data.provider_status) })
         return
       }
 
@@ -88,9 +100,17 @@ export function useArtworkSearch(query: string, providerId?: string, allowBrowse
             { q: trimmed, limit: searchLimit },
             (status, results) => {
               acc = accumulateProviderEvent(acc, status, results)
-              setState({ status: 'success', results: acc.results, providerStatus: acc.providerStatus })
+              // Stays 'loading' (not 'success') until every provider has
+              // reported: the first museum to respond might have 0 results
+              // or error out (Harvard/Smithsonian often do) while others are
+              // still streaming in, and flipping to 'success' right then
+              // would flash "nada encontrado" before the rest arrive.
+              setState({ status: 'loading', ...filterEnabled(acc.results, acc.providerStatus) })
             },
-            resolve,
+            () => {
+              setState({ status: 'success', ...filterEnabled(acc.results, acc.providerStatus) })
+              resolve()
+            },
             () => reject(new Error('A busca não respondeu.')),
           )
         })
@@ -98,7 +118,7 @@ export function useArtworkSearch(query: string, providerId?: string, allowBrowse
       }
 
       const data = await searchArtworks({ q: trimmed, providerId, limit: searchLimit }, controller.signal)
-      setState({ status: 'success', results: data.results, providerStatus: data.provider_status })
+      setState({ status: 'success', ...filterEnabled(data.results, data.provider_status) })
     }
 
     const timer = setTimeout(

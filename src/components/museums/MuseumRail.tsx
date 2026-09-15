@@ -1,14 +1,17 @@
 import { Box, IconButton, Typography } from '@mui/material'
 import { useEffect, useRef, useState } from 'react'
-import { MUSEUMS } from '../museums/catalog'
-import { ArrowIcon } from './icons'
+import { MUSEUMS } from './catalog'
+import { ArrowIcon } from '../icons'
 import { MuseumCard } from './MuseumCard'
 
 // Reimplements salas.html's `#atrio` rail behavior (scroll-snap + "focused"
 // card + progress bar) in React state — not a port of its vanilla JS.
 export function MuseumRail() {
   const railRef = useRef<HTMLDivElement | null>(null)
-  const cardRefs = useRef<(HTMLAnchorElement | null)[]>([])
+  // HTMLElement, not HTMLAnchorElement: a disabled museum's card renders as
+  // a plain div (see MuseumCard) so it can't be navigated to at all — only
+  // .offsetLeft/.offsetWidth are read here, which both exist regardless.
+  const cardRefs = useRef<(HTMLElement | null)[]>([])
   const [focused, setFocused] = useState(0)
 
   useEffect(() => {
@@ -51,7 +54,7 @@ export function MuseumRail() {
   }
 
   return (
-    <Box sx={{ position: 'relative' }}>
+    <Box sx={{ position: 'relative', display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
       <Box
         ref={railRef}
         role="list"
@@ -59,13 +62,15 @@ export function MuseumRail() {
           display: 'flex',
           alignItems: 'center',
           gap: { xs: 2, sm: 4 },
+          flex: 1,
+          minHeight: 0,
           overflowX: 'auto',
           overflowY: 'hidden',
           scrollSnapType: 'x mandatory',
           scrollbarWidth: 'none',
           '&::-webkit-scrollbar': { display: 'none' },
           px: { xs: '11vw', sm: 'max(24px, calc(50vw - 210px))' },
-          py: 4,
+          py: { xs: 1.5, sm: 2 },
         }}
       >
         {MUSEUMS.map((museum, i) => (
@@ -102,6 +107,7 @@ export function MuseumRail() {
             disabled={focused === 0}
             aria-label="Museu anterior"
             size="small"
+            sx={{ minWidth: 44, minHeight: 44 }}
           >
             <ArrowIcon direction="left" width={15} />
           </IconButton>
@@ -110,6 +116,7 @@ export function MuseumRail() {
             disabled={focused === MUSEUMS.length - 1}
             aria-label="Próximo museu"
             size="small"
+            sx={{ minWidth: 44, minHeight: 44 }}
           >
             <ArrowIcon direction="right" width={15} />
           </IconButton>
