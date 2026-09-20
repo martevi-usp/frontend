@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { ArtworkCatalog, DIFFICULTIES, type Artwork } from '../../src/components/artworks'
+import { ArtworkCatalog, DIFFICULTIES, type Artwork } from '../../src/components/jigsaw/artworks'
 import { PUZZLES } from '../fixtures/puzzles'
 
 const artworks: Artwork[] = PUZZLES.map(({ pieces: _pieces, ...a }) => a)

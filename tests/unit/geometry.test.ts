@@ -9,7 +9,7 @@ import {
   TAB_REACH,
   type PieceSpec,
   type Tab,
-} from '../../src/components/geometry'
+} from '../../src/components/jigsaw/geometry'
 
 /* ------------------------------------------------------------------ *
  * Helpers for reading a generated outline back.
