@@ -8,27 +8,21 @@ npm install
 npm run dev        # http://localhost:5173
 npm run build
 npm test           # unit tests (Vitest)
-npm run test:e2e   # browser tests (Playwright)
 ```
-
-The browser tests need Chromium once: `npx playwright install chromium`.
-They build the app and run against the preview server, so no dev server has
-to be running first.
 
 ## Layout
 
 ```text
-config/   vite, vitest, playwright and tsc config — see below
+config/   vite, vitest and tsc config — see below
 tests/
   unit/   Vitest — pure logic, no DOM (e.g. tests/unit/geometry.test.ts)
-  e2e/    Playwright — a real browser against the production build
 src/      the app itself
 ```
 
 Config lives in `config/` instead of the project root so the root only
 holds what has to be there — `package.json`, `index.html`, the Dockerfile —
 and someone opening the repo isn't greeted by nine dotfiles before they find
-`src/`. `npm`'s scripts point `vite`/`vitest`/`playwright`/`oxlint` at their
+`src/`. `npm`'s scripts point `vite`/`vitest`/`oxlint` at their
 config explicitly (e.g. `vite --config config/vite.config.ts`), so nothing
 about running the app day to day changes — `npm run dev`, `npm test`, and
 so on all still work exactly as listed above. The root `tsconfig.json` is
@@ -51,7 +45,7 @@ packages aren't installed, which is every production image, any
 
 `config/tsconfig.app.json` only sees `src/` for the same reason: `npm run
 build` runs `tsc -b`, and type-checking a test file drags in its imports.
-Tests (`tests/unit/`, `tests/e2e/`) and the config files themselves are
+Tests (`tests/unit/`) and the config files themselves are
 type-checked by `config/tsconfig.test.json` instead — `npm run typecheck`
 covers everything, and needs the dev dependencies.
 

@@ -1,7 +1,7 @@
-import JigsawPuzzle from './pages/JigsawPuzzle'
+import PuzzlePage from './pages/PuzzlePage'
 
 function App() {
-  return <JigsawPuzzle />
+  return <PuzzlePage />
 }
 
 export default App
