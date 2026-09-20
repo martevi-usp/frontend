@@ -3,10 +3,10 @@ const API_URL = (import.meta.env.VITE_API_URL ?? 'http://localhost:8000').replac
 let sent = false
 
 /**
- * Wakes the backend as early as possible. The free host spins down when idle
- * and takes about a minute to come back (backend ADR-0006), so the first
- * visit fires this on load — the server wakes while the visitor reads the
- * home page instead of after they open the puzzle.
+ * Wakes the backend as early as possible. Cloud Run scales to zero when idle,
+ * so the first request after a quiet spell pays a cold start (backend
+ * ADR-0006), so the first visit fires this on load — the server wakes while
+ * the visitor reads the home page instead of after they open the puzzle.
  *
  * The path is /health, not /healthz: Cloud Run's front end answers /healthz
  * itself, so that request would never reach (or wake) the container.

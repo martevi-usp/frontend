@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { buildPieces, makeRng, piecePadding } from '../../src/components/geometry'
+import { buildPieces, makeRng, piecePadding } from '../../src/components/jigsaw/geometry'
 import {
   boardFillFor,
   homeOf,
@@ -10,7 +10,7 @@ import {
   settle,
   snapDistance,
   type Placement,
-} from '../../src/components/rules'
+} from '../../src/components/jigsaw/rules'
 
 const loose = (over: Partial<Placement> = {}): Placement => ({
   x: 0,

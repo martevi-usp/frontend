@@ -12,8 +12,8 @@ import {
 } from '@mui/material'
 
 import { fetchStory } from '../api/puzzles'
-import { DIFFICULTIES, type ArtworkCatalog, type Story } from '../components/artworks'
-import { buildPieces, makeRng, piecePadding, piecePath, solveGrid, type PieceSpec } from '../components/geometry'
+import { DIFFICULTIES, type ArtworkCatalog, type Story } from '../components/jigsaw/artworks'
+import { buildPieces, makeRng, piecePadding, piecePath, solveGrid, type PieceSpec } from '../components/jigsaw/geometry'
 import {
   boardFillFor,
   CLICK_SLOP,
@@ -22,7 +22,7 @@ import {
   settle as settlePiece,
   snapDistance,
   type Placement,
-} from '../components/rules'
+} from '../components/jigsaw/rules'
 
 type ImageState =
   | { kind: 'loading' }

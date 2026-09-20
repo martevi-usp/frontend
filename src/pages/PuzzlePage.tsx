@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { Box, Button, Stack, Typography } from '@mui/material'
 
 import { fetchPuzzles } from '../api/puzzles'
-import { ArtworkCatalog } from '../components/artworks'
+import { ArtworkCatalog } from '../components/jigsaw/artworks'
 import JigsawPuzzle from './JigsawPuzzle'
 
 type State =
@@ -10,9 +10,9 @@ type State =
   | { kind: 'ready'; catalog: ArtworkCatalog }
   | { kind: 'error' }
 
-/** How long to wait before saying the server may be waking up. The free
- *  host spins down when idle and takes about a minute to come back
- *  (backend ADR-0006). */
+/** How long to wait before saying the server may be waking up. Cloud Run
+ *  scales to zero when idle, so the first request after a quiet spell pays a
+ *  cold start (backend ADR-0006). */
 const SLOW_AFTER_MS = 4000
 
 export default function PuzzlePage() {

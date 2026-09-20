@@ -1,13 +1,13 @@
-# ADR-0005: Puzzle Catalog and Wall Notes Come from the Backend
+# ADR-0002: Puzzle Catalog and Wall Notes Come from the Backend
 
-**Status:** Proposed
+**Status:** Accepted
 **Date:** 2026-09-20
 **Deciders:** martevi frontend owner(s)
 **Amends:** ADR-0001 (adds one seam to `JigsawPuzzle.tsx`; the pure-function core is untouched)
 
 ## Context
 
-The jigsaw's catalog — artwork, image URL, rights, movement, and the wall note (`story.lede` / `story.body`) — is hardcoded in `src/components/artworks.ts`. Backend ADR-0004 introduces read-only persistence for exactly this editorial content (`puzzle`, `puzzle_story`), and the course brief asks for persistence to be visible in the product. Keeping two sources of truth would defeat that.
+The jigsaw's catalog — artwork, image URL, rights, movement, and the wall note (`story.lede` / `story.body`) — is hardcoded in `src/components/jigsaw/artworks.ts`. Backend ADR-0004 introduces read-only persistence for exactly this editorial content (`puzzle`, `puzzle_story`), and the course brief asks for persistence to be visible in the product. Keeping two sources of truth would defeat that.
 
 ADR-0001 says game logic stays out of the component and records the puzzle as finished. The screen currently derives `solved` internally (`JigsawPuzzle.tsx`) and renders the note itself; there is no outward seam.
 
@@ -25,8 +25,8 @@ ADR-0001 says game logic stays out of the component and records the puzzle as fi
 
 ## Consequences
 
-- The puzzle now needs the backend to be up, and on a Render free tier, awake (backend ADR-0006): the page must show a loading state and tolerate a ~1 minute cold start. Previously only Wikimedia was required.
+- The puzzle now needs the backend to be up, and on Cloud Run with scale-to-zero, awake (backend ADR-0006): the page must show a loading state and tolerate a cold start. Previously only Wikimedia was required.
 - Anyone can request the note early by passing `progress_pct=100` themselves; accepted, since it is editorial text, not a secret.
 - A slow or failed note request shows a placeholder under the solved board rather than blocking the screen.
-- Tests: unit tests of `geometry`/`rules` are unaffected; `ArtworkCatalog` and the API client are unit-tested with fixtures. The Playwright suite stubs the API with the same fixtures, but it is not currently run (it did not work in the local setup), so that stub is unverified.
+- Tests: unit tests of `geometry`/`rules` are unaffected; `ArtworkCatalog` and the API client are unit-tested with fixtures. There is no e2e coverage: the loading, cold-start, retry and note-fetch states are not tested.
 - ADR-0001's "no modification" stance is relaxed for the data source only.

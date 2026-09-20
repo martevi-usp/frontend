@@ -3,7 +3,7 @@
  *
  * The catalog itself (titles, credits, image URLs, rights, wall notes) is
  * editorial content served by the backend from its read-only database — see
- * backend ADR-0004 and frontend ADR-0005. Provenance notes (`verified`,
+ * backend ADR-0004 and frontend ADR-0002. Provenance notes (`verified`,
  * `rights`) travel with the data: STEERING.md is explicit that demo records
  * must not reach a user as authoritative, so each entry states what is
  * actually known about it rather than the UI guessing.

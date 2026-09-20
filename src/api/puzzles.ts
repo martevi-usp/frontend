@@ -1,4 +1,4 @@
-import type { Artwork, Story } from '../components/artworks'
+import type { Artwork, Story } from '../components/jigsaw/artworks'
 
 const API_URL = (import.meta.env.VITE_API_URL ?? 'http://localhost:8000').replace(/\/$/, '')
 

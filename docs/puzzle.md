@@ -3,9 +3,9 @@
 A jigsaw over an artwork photo, with piece count as the difficulty dial.
 
 ```
-src/components/geometry.ts    how the picture is cut: grid fitting, piece outlines
-src/components/rules.ts       the rules of play: what locks, where loose pieces land
-src/components/artworks.ts    the built-in collection (ArtworkCatalog) and the difficulty presets
+src/components/jigsaw/geometry.ts how the picture is cut: grid fitting, piece outlines
+src/components/jigsaw/rules.ts    the rules of play: what locks, where loose pieces land
+src/components/jigsaw/artworks.ts the built-in collection (ArtworkCatalog) and the difficulty presets
 src/pages/JigsawPuzzle.tsx    the screen — measurement, pointers, and wiring the above
 ```
 
@@ -113,7 +113,7 @@ note comes in. Narrow screens stack instead, board over note.
 
 The note is the reward and is never shown before the puzzle is done. Its
 text is served by the backend and fetched once the puzzle is solved
-(`src/api/puzzles.ts`, frontend ADR-0005).
+(`src/api/puzzles.ts`, frontend ADR-0002).
 
 ## Tests
 
