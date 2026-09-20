@@ -1,0 +1,12 @@
+// Frontend deploy target: Workers static assets (backend ADR-0006; this file is only the free static frontend).
+// `npm run deploy` builds first; set VITE_API_URL to the backend's Cloud Run URL.
+{
+  "name": "martevi",
+  "compatibility_date": "2026-09-01",
+  "assets": {
+    "directory": "./dist",
+    // Hash routing means every real path is index.html anyway; this keeps a
+    // mistyped path from returning a 404 page instead of the app.
+    "not_found_handling": "single-page-application"
+  }
+}

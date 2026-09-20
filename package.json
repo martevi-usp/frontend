@@ -8,6 +8,8 @@
     "build": "tsc -b && vite build --config config/vite.config.ts",
     "lint": "oxlint -c config/.oxlintrc.json",
     "preview": "vite preview --config config/vite.config.ts",
+    "predeploy": "node -e \"if (!process.env.VITE_API_URL) { console.error('Set VITE_API_URL to the backend URL first, e.g. VITE_API_URL=https://<service>.run.app npm run deploy'); process.exit(1) }\"",
+    "deploy": "npm run build && npx wrangler deploy",
     "test": "vitest run --config config/vitest.config.ts",
     "test:watch": "vitest --config config/vitest.config.ts",
     "test:e2e": "playwright test --config config/playwright.config.ts",

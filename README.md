@@ -62,3 +62,36 @@ covers everything, and needs the dev dependencies.
 `salas` prototype into `createTheme()`. It's wired up in `src/main.tsx`
 alongside the self-hosted fonts (`@fontsource/instrument-serif`,
 `@fontsource/inter`).
+
+## Deploy
+
+Served as static assets from Cloudflare Workers (`wrangler.jsonc`). The API
+URL is baked in at build time, so set it when you deploy — use the backend's
+Cloud Run URL (see the backend's `deploy/cloud-run/README.md`):
+
+```bash
+npx wrangler login
+VITE_API_URL=https://<your-backend>.run.app npm run deploy
+```
+
+`npm run deploy` stops if `VITE_API_URL` is unset, so a bundle can't ship
+pointing at `localhost:8000`.
+
+`npx wrangler deploy --dry-run` after a build checks the config without
+uploading anything.
+
+### Continuous deployment
+
+`.github/workflows/deploy.yml` builds and deploys after frontend CI passes on
+`main` (and on demand from the Actions tab). In this repository's GitHub
+settings (Settings > Secrets and variables > Actions), create an environment
+named `production` and set:
+
+| Kind | Name | Value |
+|---|---|---|
+| Variable | `VITE_API_URL` | the backend's Cloud Run URL |
+| Secret | `CLOUDFLARE_API_TOKEN` | an API token allowed to edit Workers |
+| Secret | `CLOUDFLARE_ACCOUNT_ID` | your Cloudflare account id |
+
+The workflow has not been run: it needs your Cloudflare account and GitHub
+settings.
