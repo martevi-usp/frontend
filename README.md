@@ -1,7 +1,7 @@
 # martevi — frontend
 
-React + TypeScript, scaffolded with Vite. No routing yet — `App.tsx` renders
-the one feature that exists.
+React + TypeScript, scaffolded with Vite. Two screens, chosen by the URL path
+(`src/App.tsx`): a placeholder home page and the jigsaw puzzle.
 
 ```bash
 npm install
