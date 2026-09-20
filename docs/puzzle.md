@@ -112,13 +112,13 @@ Placed pieces carry a transition, so the whole picture glides across as the
 note comes in. Narrow screens stack instead, board over note.
 
 The note is the reward and is never shown before the puzzle is done. Its
-text lives in `artworks.ts` under `story`.
+text is served by the backend and fetched once the puzzle is solved
+(`src/api/puzzles.ts`, frontend ADR-0005).
 
 ## Tests
 
 ```bash
-npm test           # unit — geometry and rules, ~1s
-npm run test:e2e   # browser — the component, ~25s
+npm test           # unit — geometry, rules, catalog, API client
 ```
 
 **Unit (Vitest, `*.test.ts`).** Everything pure. The one that matters most
@@ -130,28 +130,6 @@ is symmetric about its midpoint. Also covered: the cut's tab/socket
 pairing, flat borders, deterministic seeding, and every rule in `rules.ts`
 including the two rotation regressions below.
 
-**Browser (Playwright, `tests/e2e/`).** Only what a real pointer and a real layout
-can prove: pieces render as clipped shapes, drag and click reach the right
-handlers, the board grows for hard levels, finishing opens the wall note.
-Runs against the production build, because the outlines rely on
-`clip-path: path()` and the layout on real measurement — jsdom reports
-neither. Needs a browser once: `npx playwright install chromium`.
-
-Two things make these tests flaky if you forget them, both learned the hard
-way:
-
-- **Wait for animations, never a fixed pause.** Pieces ease into place and
-  turn over a fraction of a second. A piece read halfway through a quarter
-  turn measures about 45°, which rounds to whichever neighbour is closer —
-  so the reading becomes a coin toss. `waitForAnimations()` waits two frames
-  (a transition triggered in the same tick isn't registered yet) then awaits
-  every running animation.
-- **Take the grid from the app, don't hard-code it.** The split is fitted to
-  the image's proportions, so "12 pieces" is 4×3 for this artwork and
-  something else for another. `openPuzzle()` returns the real grid; hard-
-  coding one silently mis-aimed every drag whenever a click hadn't landed
-  yet, and the failures looked like app bugs.
-
 ## Verified by hand, too
 
 Geometry was checked by rendering all pieces at their home positions and
@@ -161,20 +139,17 @@ puzzle end to end with rotation on.
 
 ## Before shipping: the collection
 
-`artworks.ts` carries a `verified` flag per entry: whether the image URL
-has actually been confirmed to resolve, checked against the Wikimedia
-Commons API (existence, license, dimensions). The flag covers the whole
-entry, image and wall note alike: the notes are checkable claims (dates,
-names, events) rather than invented ones, but they still want a pass
-against each museum's own record. An unverified entry says so in its own
-credit line.
+The catalog is served by the backend (`GET /puzzles`, backend ADR-0004);
+`artworks.ts` holds only the types and the `ArtworkCatalog` wrapper. Each
+entry carries a `verified` flag: whether the image URL has actually been
+confirmed to resolve, checked against the Wikimedia Commons API (existence,
+license, dimensions). The flag covers the whole entry, image and wall note
+alike: the notes are checkable claims (dates, names, events) rather than
+invented ones, but they still want a pass against each museum's own record.
+An unverified entry says so in its own credit line.
 
 Every entry points at Wikimedia via `Special:FilePath`, which resolves a
 bare filename to the right thumbnail without reproducing their md5 path
 layout — there is no local fallback image, so the puzzle needs network
 access. The UI shows an explicit error state when an image fails to load
 rather than a blank board.
-
-When a real backend exists, this collection should come from the museum
-adapter instead of a hand-written file — at which point `Artwork` becomes a
-projection of the API's artwork model, not its own type.
