@@ -11,7 +11,8 @@ import {
   Typography,
 } from '@mui/material'
 
-import { artworkCatalog, DIFFICULTIES } from '../components/artworks'
+import { fetchStory } from '../api/puzzles'
+import { DIFFICULTIES, type ArtworkCatalog, type Story } from '../components/artworks'
 import { buildPieces, makeRng, piecePadding, piecePath, solveGrid, type PieceSpec } from '../components/geometry'
 import {
   boardFillFor,
@@ -31,8 +32,8 @@ type ImageState =
 /** Below this width the solved layout stacks instead of splitting. */
 const SPLIT_AT = 900
 
-export default function JigsawPuzzle() {
-  const [artworkId, setArtworkId] = useState(artworkCatalog.defaultArtwork.id)
+export default function JigsawPuzzle({ catalog }: { catalog: ArtworkCatalog }) {
+  const [artworkId, setArtworkId] = useState(catalog.defaultArtwork.id)
   const [target, setTarget] = useState(DIFFICULTIES[1].pieces)
   // Rotation is no longer a separate choice — it's on from Médio up, off only
   // on Fácil, so a beginner level stays simple and every harder one adds it.
@@ -44,7 +45,16 @@ export default function JigsawPuzzle() {
   const [placements, setPlacements] = useState<Placement[]>([])
   const [dragIndex, setDragIndex] = useState<number | null>(null)
 
-  const artwork = artworkCatalog.get(artworkId)
+  const artwork = catalog.get(artworkId)
+  // Keyed by artwork id so a note fetched for one piece is never shown under
+  // another; anything not yet fetched for the current artwork reads as loading.
+  const [fetched, setFetched] = useState<{ id: string; story: Story | null } | null>(null)
+  const story: { kind: 'loading' } | { kind: 'ready'; story: Story } | { kind: 'error' } =
+    fetched?.id !== artwork.id
+      ? { kind: 'loading' }
+      : fetched.story
+        ? { kind: 'ready', story: fetched.story }
+        : { kind: 'error' }
 
   // Measure the play surface — everything downstream is derived from this,
   // so the puzzle re-lays-out on resize rather than overflowing.
@@ -90,6 +100,20 @@ export default function JigsawPuzzle() {
   // difficulty change the old placements linger for a frame, and without this
   // the finished layout would flash before the new scatter lands.
   const solved = pieceCount > 0 && placements.length === pieceCount && placedCount === pieceCount
+
+  // The wall note is fetched only once the puzzle is solved — the API holds it
+  // back until then (see fetchStory), so the text isn't in the initial payload.
+  const artworkKey = artwork.id
+  useEffect(() => {
+    if (!solved) return
+    const ctl = new AbortController()
+    fetchStory(artworkKey, ctl.signal)
+      .then((st) => setFetched({ id: artworkKey, story: st }))
+      .catch(() => {
+        if (!ctl.signal.aborted) setFetched({ id: artworkKey, story: null })
+      })
+    return () => ctl.abort()
+  }, [solved, artworkKey])
 
   const wide = surface.w >= SPLIT_AT
 
@@ -347,7 +371,7 @@ export default function JigsawPuzzle() {
                 '& .MuiOutlinedInput-notchedOutline': { borderColor: 'divider' },
               }}
             >
-              {artworkCatalog.list().map((a) => (
+              {catalog.list().map((a) => (
                 <MenuItem key={a.id} value={a.id} sx={{ fontSize: 13 }}>
                   {a.title}
                 </MenuItem>
@@ -546,11 +570,13 @@ export default function JigsawPuzzle() {
                       lineHeight: 1.24,
                     }}
                   >
-                    {artwork.story.lede}
+                    {story.kind === 'ready' ? story.story.lede : artwork.title}
                   </Typography>
 
                   <Typography variant="body2" sx={{ lineHeight: 1.85 }}>
-                    {artwork.story.body}
+                    {story.kind === 'ready' && story.story.body}
+                    {story.kind === 'loading' && 'carregando a nota…'}
+                    {story.kind === 'error' && 'Não foi possível carregar a nota de parede.'}
                   </Typography>
 
                   <Typography variant="caption" sx={{ display: 'block', mt: 3 }}>

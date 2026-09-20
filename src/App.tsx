@@ -1,7 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes, useParams } from 'react-router-dom'
 import AtriumPage from './pages/AtriumPage'
-import JigsawPuzzle from './pages/JigsawPuzzle'
 import MuseumPage from './pages/MuseumPage'
+import PuzzlePage from './pages/PuzzlePage'
 import SearchPage from './pages/SearchPage'
 
 // `key={providerId}` forces a fresh MuseumPage (and its default browse
@@ -19,7 +19,7 @@ function App() {
         <Route path="/" element={<AtriumPage />} />
         <Route path="/busca" element={<SearchPage />} />
         <Route path="/museu/:providerId" element={<MuseumRoute />} />
-        <Route path="/quebra-cabeca" element={<JigsawPuzzle />} />
+        <Route path="/quebra-cabeca" element={<PuzzlePage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
