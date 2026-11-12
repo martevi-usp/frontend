@@ -18,6 +18,9 @@ export default function HomePage() {
           <Button variant="contained" component={RouterLink} to="/quebra-cabeca">
             Montar um quebra-cabeça
           </Button>
+          <Button component={RouterLink} to="/atrio" sx={{ ml: 1 }}>
+            Explorar os museus
+          </Button>
         </Box>
       </Stack>
     </Box>

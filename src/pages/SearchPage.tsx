@@ -20,7 +20,7 @@ export default function SearchPage() {
       <Container maxWidth={false} sx={{ px: { xs: 2, sm: 4 }, pt: { xs: 6, sm: 9 } }}>
         <Typography
           component={Link}
-          to="/"
+          to="/atrio"
           variant="overline"
           sx={{ display: 'inline-block', textDecoration: 'none', color: 'text.disabled', mb: 2 }}
         >

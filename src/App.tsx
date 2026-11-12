@@ -23,8 +23,8 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<AtriumPage />} />
-        <Route path="/inicio" element={<HomePage />} />
+        <Route path="/" element={<HomePage />} />
+        <Route path="/atrio" element={<AtriumPage />} />
         <Route path="/busca" element={<SearchPage />} />
         <Route path="/museu/:providerId" element={<MuseumRoute />} />
         <Route path="/quebra-cabeca" element={<PuzzlePage />} />

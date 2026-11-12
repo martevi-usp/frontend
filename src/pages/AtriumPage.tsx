@@ -1,6 +1,6 @@
-import { Box, Container, Typography } from '@mui/material'
+import { Box, Container, Link, Typography } from '@mui/material'
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link as RouterLink, useNavigate } from 'react-router-dom'
 import { MuseumRail } from '../components/museums/MuseumRail'
 import { SearchBar } from '../components/SearchBar'
 
@@ -40,6 +40,10 @@ export default function AtriumPage() {
               ariaLabel="Buscar em todos os museus"
             />
           </Box>
+
+          <Link component={RouterLink} to="/quebra-cabeca" variant="body2" sx={{ display: 'inline-block', mt: 1.5 }}>
+            Montar um quebra-cabeça →
+          </Link>
         </Container>
       </Box>
 
