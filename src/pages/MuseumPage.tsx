@@ -16,7 +16,7 @@ export default function MuseumPage() {
       <Container maxWidth={false} sx={{ px: { xs: 2, sm: 4 }, pt: 9 }}>
         <Typography variant="h3">Museu não encontrado.</Typography>
         <Typography variant="body1" sx={{ mt: 2 }}>
-          <Box component={Link} to="/" sx={{ color: 'primary.main' }}>
+          <Box component={Link} to="/atrio" sx={{ color: 'primary.main' }}>
             ← voltar ao átrio
           </Box>
         </Typography>
@@ -29,7 +29,7 @@ export default function MuseumPage() {
       <Container maxWidth={false} sx={{ px: { xs: 2, sm: 4 }, pt: 9 }}>
         <Typography variant="h3">Museu fechado no momento.</Typography>
         <Typography variant="body1" sx={{ mt: 2 }}>
-          <Box component={Link} to="/" sx={{ color: 'primary.main' }}>
+          <Box component={Link} to="/atrio" sx={{ color: 'primary.main' }}>
             ← voltar ao átrio
           </Box>
         </Typography>
@@ -53,7 +53,7 @@ export default function MuseumPage() {
         <Box>
           <Typography
             component={Link}
-            to="/"
+            to="/atrio"
             variant="overline"
             sx={{ display: 'inline-block', textDecoration: 'none', color: 'text.disabled', mb: 2 }}
           >
