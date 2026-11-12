@@ -1,5 +1,6 @@
 import { Box, Typography } from '@mui/material'
 import { useState } from 'react'
+import { resolveImageUrl } from '../api/client'
 import type { ArtworkSummary } from '../api/types'
 import { getMuseum } from './museums/catalog'
 
@@ -44,7 +45,7 @@ export function ArtworkCard({ item, width, aspect, onAspect, showProvider }: Art
       {item.thumbnail_url && !imageFailed ? (
         <Box
           component="img"
-          src={item.thumbnail_url}
+          src={resolveImageUrl(item.thumbnail_url)}
           alt={title}
           loading="lazy"
           onLoad={(e) => {

@@ -2,6 +2,12 @@ import type { Artwork, ArtworkSummary, FanOutSearchResult, ProviderSearchStatus 
 
 const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8000'
 
+/** Image URLs the backend serves itself (e.g. `/images/aic/...`) come back as
+ *  paths relative to the API; absolute provider URLs pass through unchanged. */
+export function resolveImageUrl(url: string): string {
+  return url.startsWith('/') ? new URL(url, API_URL).toString() : url
+}
+
 export class ApiError extends Error {
   status: number
 
