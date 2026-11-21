@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { BrowserRouter, Navigate, Route, Routes, useParams } from 'react-router-dom'
 import { warmUpBackend } from './api/warmup'
+import ArtworkPage from './pages/ArtworkPage'
 import AtriumPage from './pages/AtriumPage'
 import HomePage from './pages/HomePage'
 import MuseumPage from './pages/MuseumPage'
@@ -27,6 +28,7 @@ function App() {
         <Route path="/atrio" element={<AtriumPage />} />
         <Route path="/busca" element={<SearchPage />} />
         <Route path="/museu/:providerId" element={<MuseumRoute />} />
+        <Route path="/obra/:artworkId" element={<ArtworkPage />} />
         <Route path="/quebra-cabeca" element={<PuzzlePage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
