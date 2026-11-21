@@ -1,7 +1,9 @@
 import { Box, Typography } from '@mui/material'
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { resolveImageUrl } from '../api/client'
 import type { ArtworkSummary } from '../api/types'
+import type { ArtworkLinkState } from '../pages/ArtworkPage'
 import { getMuseum } from './museums/catalog'
 
 interface ArtworkCardProps {
@@ -28,10 +30,17 @@ export function ArtworkCard({ item, width, aspect, onAspect, showProvider }: Art
       : 'medida não informada pela API'
 
   return (
+    // Opens the gallery room (/obra/:id). The summary rides along in router
+    // state so the room can draw immediately while the full record loads.
     <Box
+      component={Link}
+      to={`/obra/${encodeURIComponent(item.id)}`}
+      state={{ summary: item } satisfies ArtworkLinkState}
+      aria-label={`${title} — ver na sala`}
       sx={{
         position: 'relative',
         display: 'block',
+        textDecoration: 'none',
         width,
         height,
         overflow: 'hidden',
