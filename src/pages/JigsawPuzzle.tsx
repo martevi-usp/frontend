@@ -12,6 +12,7 @@ import {
 } from '@mui/material'
 
 import { fetchStory } from '../api/puzzles'
+import { HomeLink } from '../components/HomeLink'
 import { DIFFICULTIES, type ArtworkCatalog, type Story } from '../components/jigsaw/artworks'
 import { buildPieces, makeRng, piecePadding, piecePath, solveGrid, type PieceSpec } from '../components/jigsaw/geometry'
 import {
@@ -345,13 +346,16 @@ export default function JigsawPuzzle({ catalog }: { catalog: ArtworkCatalog }) {
           borderColor: 'divider',
         }}
       >
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 1 }}>
+          <Typography variant="overline">quebra-cabeça</Typography>
+          <HomeLink />
+        </Box>
         <Stack
           direction={{ xs: 'column', md: 'row' }}
           spacing={2}
           sx={{ alignItems: { md: 'flex-end' }, justifyContent: 'space-between' }}
         >
           <Box sx={{ minWidth: 0 }}>
-            <Typography variant="overline">quebra-cabeça</Typography>
             <Typography variant="h3" sx={{ fontSize: 'clamp(26px, 4vw, 48px)', mt: 0.5 }}>
               {titleWords.slice(0, -1).join(' ')}{' '}
               <Box component="em" sx={{ fontStyle: 'italic', color: 'primary.main' }}>

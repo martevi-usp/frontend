@@ -56,5 +56,9 @@ describe('landing routes', () => {
     expect(html).toContain('tarefa do daiki')
     expect(html).not.toContain('Sua experiência começa aqui')
   })
+
+  it.each(['/atrio', '/quebra-cabeca', '/tarefa-do-daiki'])('links directly to the home page from %s', (path) => {
+    expect(renderRoute(path)).toMatch(/<a [^>]*href="\/"[^>]*>(?:(?!<\/a>).)*Voltar à página inicial<\/a>/)
+  })
 })
 
