@@ -58,7 +58,9 @@ describe('landing routes', () => {
   })
 
   it.each(['/atrio', '/quebra-cabeca', '/tarefa-do-daiki'])('links directly to the home page from %s', (path) => {
-    expect(renderRoute(path)).toMatch(/<a [^>]*href="\/"[^>]*>(?:(?!<\/a>).)*Voltar à página inicial<\/a>/)
+    expect(renderRoute(path)).toMatch(
+      /<a (?=[^>]*href="\/")(?=[^>]*aria-label="Voltar à página inicial")[^>]*>(?:(?!<\/a>).)*Voltar<\/a>/,
+    )
   })
 })
 

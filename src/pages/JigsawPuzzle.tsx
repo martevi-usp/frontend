@@ -346,9 +346,9 @@ export default function JigsawPuzzle({ catalog }: { catalog: ArtworkCatalog }) {
           borderColor: 'divider',
         }}
       >
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 1 }}>
-          <Typography variant="overline">quebra-cabeça</Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 1.5 }}>
           <HomeLink />
+          <Typography variant="overline">quebra-cabeça</Typography>
         </Box>
         <Stack
           direction={{ xs: 'column', md: 'row' }}
