@@ -95,15 +95,10 @@ export default function HomePage() {
               </Typography>
             </Box>
 
-            <Box sx={{ maxWidth: 610 }}>
-              <Typography variant="body1" sx={{ fontSize: { xs: 16, sm: 18 }, lineHeight: 1.65 }}>
-                O Martevi reúne acervos abertos de grandes museus em uma visita interativa. Para quem
-                não pode atravessar o oceano, mas quer experimentar tudo de perto.
-              </Typography>
-              <Typography variant="body1" sx={{ mt: 2, fontSize: { xs: 16, sm: 18 }, lineHeight: 1.65 }}>
-                A arte não deveria conhecer barreiras sociais, econômicas ou geográficas.
-              </Typography>
-            </Box>
+            <Typography variant="body1" sx={{ maxWidth: 610, fontSize: { xs: 16, sm: 18 }, lineHeight: 1.65 }}>
+              O Martevi reúne acervos abertos de grandes museus em uma visita interativa. Para quem
+              não pode atravessar o oceano, mas quer experimentar tudo de perto.
+            </Typography>
           </Box>
           <LandingMuseumCarousel />
         </Box>

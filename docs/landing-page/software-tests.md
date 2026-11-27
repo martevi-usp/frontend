@@ -46,9 +46,10 @@ Tests       123 passed (123)
 The totals include the complete frontend suite. The landing contribution is
 two files and seven tests, with three unit tests and four integration tests.
 
-A local Chromium check verified automatic rotation, pause, previous and
-next navigation across the end of the catalog, reduced-motion controls, and
-the heading layout at 390 px and 320 px.
+A local Chromium check verified automatic rotation at about three seconds,
+pause while a control has focus, previous and next navigation across the end
+of the catalog, reduced-motion controls, and the heading layout at 390 px and
+320 px.
 
 Additional successful commands:
 

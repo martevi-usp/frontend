@@ -22,7 +22,7 @@ describe('landing routes', () => {
 
     expect(html).toContain('Martevi:')
     expect(html).toMatch(/<em[^>]*>Democratizando<\/em>.*<span[^>]*>o acesso à cultura<\/span>/)
-    expect(html).toContain('A arte não deveria conhecer barreiras sociais, econômicas ou geográficas.')
+    expect(html).not.toContain('A arte não deveria conhecer barreiras sociais, econômicas ou geográficas.')
     expect(html).toContain('O acesso à cultura não deve conhecer barreiras')
     expect(html).toContain('Sua experiência começa aqui.')
     expect(html).toMatch(/<span[^>]*>com traduções para o português realizadas por redes neurais\.<\/span>/)
@@ -39,7 +39,7 @@ describe('landing routes', () => {
     expect(html).toMatch(new RegExp(`<figcaption[^>]*>${MUSEUMS[0].name}</figcaption>`))
     expect(html).toContain('aria-label="Museu anterior"')
     expect(html).toContain('aria-label="Próximo museu"')
-    expect(html).toContain('Pausar rotação')
+    expect(html).not.toContain('Pausar rotação')
   })
 
   it('integrates the three requested destinations with the router', () => {
