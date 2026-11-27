@@ -1,7 +1,6 @@
 import { Box, ButtonBase, Typography } from '@mui/material'
 import { Link as RouterLink } from 'react-router-dom'
 import type { LandingDestination, LandingDestinationId } from '../../landing/content'
-import { MuseumBuilding } from '../museums/MuseumBuilding'
 
 interface DestinationShowcaseProps {
   destinations: readonly LandingDestination[]
@@ -11,18 +10,17 @@ interface DestinationShowcaseProps {
 
 function AtriumPreview() {
   return (
-    <Box sx={{ position: 'absolute', inset: 0, overflow: 'hidden' }}>
-      <MuseumBuilding
-        providerId="met"
-        style={{ position: 'absolute', width: '72%', height: '72%', left: '-9%', bottom: '-4%', opacity: 0.32 }}
+    <Box sx={{ p: { xs: 2, sm: 3, lg: 4 } }}>
+      <Box
+        component="img"
+        src={`${import.meta.env.BASE_URL}rijksmuseum-gallery-line-art.webp`}
+        alt="Desenho da Galeria de Honra do Rijksmuseum, com arcos, visitantes, quadros e bancos."
+        width={1448}
+        height={1086}
+        loading="lazy"
+        decoding="async"
+        sx={{ display: 'block', width: '100%', maxWidth: 680, height: 'auto', mx: 'auto' }}
       />
-      <MuseumBuilding
-        providerId="vam"
-        style={{ position: 'absolute', width: '86%', height: '86%', right: '-16%', bottom: '-2%' }}
-      />
-      <Typography variant="overline" sx={{ position: 'absolute', top: 24, left: 24, color: 'text.primary' }}>
-        sete entradas · uma visita
-      </Typography>
     </Box>
   )
 }
@@ -85,6 +83,8 @@ function DestinationPreview({ activeId }: { activeId: LandingDestinationId }) {
       aria-label={`Prévia de ${activeId}`}
       sx={{
         position: 'relative',
+        display: 'grid',
+        alignItems: 'center',
         minHeight: { xs: 360, md: 570 },
         bgcolor: 'background.paper',
         border: '1px solid',
