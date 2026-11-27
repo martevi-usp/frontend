@@ -1,9 +1,14 @@
+import { useReducer } from 'react'
 import { Box, Button, Container, Stack, Typography } from '@mui/material'
 import { Link as RouterLink } from 'react-router-dom'
+import { DestinationShowcase } from '../components/landing/DestinationShowcase'
 import { LandingMuseumIllustration } from '../components/landing/LandingMuseumIllustration'
-import { MISSION_PILLARS } from '../landing/content'
+import { INITIAL_LANDING_STATE, reduceLandingState } from '../landing/controller'
+import { LANDING_DESTINATIONS, MISSION_PILLARS } from '../landing/content'
 
 export default function HomePage() {
+  const [state, dispatch] = useReducer(reduceLandingState, INITIAL_LANDING_STATE)
+
   return (
     <Box component="main" sx={{ minHeight: '100vh', overflow: 'hidden' }}>
       <Container maxWidth={false} sx={{ px: { xs: 2, sm: 4, lg: 6 } }}>
@@ -30,11 +35,11 @@ export default function HomePage() {
           <Stack direction="row" spacing={{ xs: 1, sm: 3 }} sx={{ alignItems: 'center' }}>
             <Typography
               component="a"
-              href="#proposito"
+              href="#experiencias"
               variant="overline"
               sx={{ color: 'text.disabled', textDecoration: 'none', display: { xs: 'none', sm: 'block' } }}
             >
-              propósito
+              experiências
             </Typography>
             <Button component={RouterLink} to="/atrio" variant="outlined" size="small">
               Entrar no átrio
@@ -155,6 +160,57 @@ export default function HomePage() {
               </Box>
             ))}
           </Box>
+        </Box>
+
+        <Box
+          id="experiencias"
+          component="section"
+          aria-labelledby="experiencias-titulo"
+          sx={{ pt: { xs: 2, md: 3 }, pb: { xs: 9, md: 14 }, scrollMarginTop: 24 }}
+        >
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: { xs: 'column', md: 'row' },
+              justifyContent: 'space-between',
+              alignItems: { md: 'end' },
+              gap: 3,
+              mb: { xs: 5, md: 7 },
+            }}
+          >
+            <Box>
+              <Typography variant="overline">escolha uma entrada</Typography>
+              <Typography id="experiencias-titulo" variant="h2" sx={{ mt: 1.5, fontSize: 'clamp(42px, 7vw, 88px)' }}>
+                A visita começa aqui.
+              </Typography>
+            </Box>
+            <Typography variant="body1" sx={{ maxWidth: '42ch', fontSize: 16 }}>
+              Passe o cursor ou navegue pelo teclado para conhecer cada caminho. Um clique leva direto à experiência.
+            </Typography>
+          </Box>
+          <DestinationShowcase
+            destinations={LANDING_DESTINATIONS}
+            activeId={state.activeDestination}
+            onSelect={(destination) => dispatch({ type: 'destination-selected', destination })}
+          />
+        </Box>
+
+        <Box
+          component="footer"
+          sx={{
+            minHeight: 96,
+            borderTop: '4px double',
+            borderColor: 'text.primary',
+            display: 'flex',
+            flexDirection: { xs: 'column', sm: 'row' },
+            alignItems: { xs: 'flex-start', sm: 'center' },
+            justifyContent: 'space-between',
+            gap: 1,
+            py: 3,
+          }}
+        >
+          <Typography variant="h5" sx={{ fontSize: 24 }}>martevi</Typography>
+          <Typography variant="overline">museus abertos para olhar devagar</Typography>
         </Box>
       </Container>
     </Box>
