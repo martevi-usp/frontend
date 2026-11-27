@@ -1,4 +1,4 @@
-import { Box, IconButton, Typography } from '@mui/material'
+import { Box, IconButton, Modal, Typography } from '@mui/material'
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type PointerEvent } from 'react'
 import { ClearIcon } from '../icons'
 
@@ -39,7 +39,7 @@ function fitted(vw: number, vh: number, aspect: number) {
  * drag or arrow keys to pan; Esc, ✕ or a click on the backdrop to leave.
  */
 export function ZoomViewer({ from, getOrigin, thumb, full, aspect, title, onClose }: ZoomViewerProps) {
-  const host = useRef<HTMLDivElement>(null)
+  const [host, setHost] = useState<HTMLDivElement | null>(null)
   const [vp, setVp] = useState(() => ({ w: window.innerWidth, h: window.innerHeight }))
   const box = fitted(vp.w, vp.h, aspect)
 
@@ -86,13 +86,7 @@ export function ZoomViewer({ from, getOrigin, thumb, full, aspect, title, onClos
   useEffect(() => {
     const onResize = () => setVp({ w: window.innerWidth, h: window.innerHeight })
     window.addEventListener('resize', onResize)
-    const previous = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
-    host.current?.focus()
-    return () => {
-      window.removeEventListener('resize', onResize)
-      document.body.style.overflow = previous
-    }
+    return () => window.removeEventListener('resize', onResize)
   }, [])
 
   const clamp = useCallback(
@@ -128,15 +122,14 @@ export function ZoomViewer({ from, getOrigin, thumb, full, aspect, title, onClos
 
   // Wheel needs a non-passive listener to keep the page from scrolling.
   useEffect(() => {
-    const el = host.current
-    if (!el) return
+    if (!host) return
     const onWheel = (e: WheelEvent) => {
       e.preventDefault()
       zoomAt(e.clientX, e.clientY, Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.0018)))
     }
-    el.addEventListener('wheel', onWheel, { passive: false })
-    return () => el.removeEventListener('wheel', onWheel)
-  }, [zoomAt])
+    host.addEventListener('wheel', onWheel, { passive: false })
+    return () => host.removeEventListener('wheel', onWheel)
+  }, [host, zoomAt])
 
   // Pointers: one finger/mouse pans, two fingers pinch.
   const pointers = useRef(new Map<number, { x: number; y: number }>())
@@ -173,9 +166,6 @@ export function ZoomViewer({ from, getOrigin, thumb, full, aspect, title, onClos
     const [cx, cy] = center()
     const step = 90
     switch (e.key) {
-      case 'Escape':
-        close()
-        break
       case '+':
       case '=':
         zoomAt(cx, cy, 1.5, true)
@@ -206,9 +196,9 @@ export function ZoomViewer({ from, getOrigin, thumb, full, aspect, title, onClos
   const zoomed = view.s > 1.02
   const [cx, cy] = center()
 
-  return (
+  const viewer = (
     <Box
-      ref={host}
+      ref={setHost}
       role="dialog"
       aria-modal="true"
       aria-label={`${title} — ampliada`}
@@ -236,7 +226,6 @@ export function ZoomViewer({ from, getOrigin, thumb, full, aspect, title, onClos
       sx={{
         position: 'fixed',
         inset: 0,
-        zIndex: 1400,
         overflow: 'hidden',
         outline: 'none',
         touchAction: 'none',
@@ -399,6 +388,14 @@ export function ZoomViewer({ from, getOrigin, thumb, full, aspect, title, onClos
         </Typography>
       </Box>
     </Box>
+  )
+
+  // The catalogue Drawer can still be exiting when the viewer opens. Both
+  // overlays share MUI's scroll lock so only the last one restores scrolling.
+  return (
+    <Modal open hideBackdrop onClose={close} sx={{ zIndex: 1400 }}>
+      {viewer}
+    </Modal>
   )
 }
 
