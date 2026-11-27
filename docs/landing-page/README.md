@@ -20,7 +20,7 @@ project.
 | Editorial model | `src/landing/content.ts` |
 | Interaction controller | `src/landing/controller.ts` (`reduceLandingState`) |
 | Interactive destination view | `src/components/landing/DestinationShowcase.tsx` |
-| Hero illustration | `src/components/landing/LandingMuseumIllustration.tsx` |
+| Hero museum carousel | `src/components/landing/LandingMuseumCarousel.tsx` |
 | Unit tests | `tests/unit/landingController.test.ts` |
 | Integration tests | `tests/integration/landingRoutes.test.tsx` |
 

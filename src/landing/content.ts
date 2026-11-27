@@ -2,6 +2,7 @@ export interface MissionPillar {
   eyebrow: string
   title: string
   description: string
+  highlight?: string
 }
 
 export type LandingDestinationId = 'atrium' | 'puzzle' | 'daiki'
@@ -21,22 +22,23 @@ export interface LandingDestination {
  */
 export const MISSION_PILLARS: readonly MissionPillar[] = [
   {
-    eyebrow: 'Acesso',
-    title: 'Sem passagem aérea.',
+    eyebrow: 'Democratização',
+    title: 'Cultura sem barreiras.',
     description:
-      'Acervos abertos de museus em outros países chegam à mesma tela, em português e sem depender de uma viagem.',
+      'Ampliamos o acesso ao patrimônio artístico e cultural, reduzindo barreiras econômicas, geográficas e linguísticas,',
+    highlight: 'com traduções para o português realizadas por redes neurais.',
   },
   {
-    eyebrow: 'Escala',
-    title: 'Cada obra no seu tamanho.',
+    eyebrow: 'Imersão',
+    title: 'Além das paredes dos museus.',
     description:
-      'As dimensões publicadas pelos museus devolvem a diferença entre uma pintura de poucos centímetros e uma tela monumental.',
+      'Explore acervos de diferentes museus em um ambiente virtual interativo que valoriza as características de cada obra.',
   },
   {
-    eyebrow: 'Contexto',
-    title: 'Tempo para olhar.',
+    eyebrow: 'Aprendizado',
+    title: 'Conhecimento pela descoberta.',
     description:
-      'Busca, salas interativas e quebra-cabeças aproximam a obra de sua história sem transformar a visita em uma lista de resultados.',
+      'Descubra a história e o contexto cultural das obras por meio de experiências lúdicas e interativas.',
   },
 ] as const
 
@@ -46,7 +48,7 @@ export const LANDING_DESTINATIONS: readonly LandingDestination[] = [
     eyebrow: 'Acervos abertos',
     title: 'Atravesse sete museus.',
     description:
-      'Escolha uma instituição no átrio e percorra obras publicadas por seu acervo digital aberto.',
+      'Um átrio digital que conecta você a sete museus e suas obras em uma experiência virtual imersiva.',
     action: 'Entrar no átrio',
     path: '/atrio',
   },
@@ -55,7 +57,7 @@ export const LANDING_DESTINATIONS: readonly LandingDestination[] = [
     eyebrow: 'Olhar demorado',
     title: 'Reconstrua uma obra.',
     description:
-      'Monte o quebra-cabeça no seu ritmo. Ao terminar, uma nota de parede revela o contexto da imagem.',
+      'Participe de uma experiência lúdica montando quebra-cabeças de obras artísticas e, ao completá-los, descubra suas histórias.',
     action: 'Abrir quebra-cabeça',
     path: '/quebra-cabeca',
   },

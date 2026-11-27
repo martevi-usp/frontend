@@ -59,7 +59,7 @@ registry could provide a stronger form of subtype polymorphism.
 ## Inheritance
 
 **Not used deliberately.** `HomePage`, `DaikiPage`,
-`DestinationShowcase`, and `LandingMuseumIllustration` do not inherit from a
+`DestinationShowcase`, and `LandingMuseumCarousel` do not inherit from a
 base page or base component. They compose React components and share the MUI
 theme.
 

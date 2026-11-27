@@ -3,6 +3,7 @@ import { renderToStaticMarkup } from 'react-dom/server'
 import { MemoryRouter } from 'react-router-dom'
 import { describe, expect, it } from 'vitest'
 import { AppRoutes } from '../../src/App'
+import { MUSEUMS } from '../../src/components/museums/catalog'
 import { theme } from '../../src/theme'
 
 function renderRoute(path: string) {
@@ -19,9 +20,26 @@ describe('landing routes', () => {
   it('renders the complete landing narrative at the root route', () => {
     const html = renderRoute('/')
 
-    expect(html).toContain('A arte não cabe num só')
-    expect(html).toContain('Distância não deveria decidir')
-    expect(html).toContain('A visita começa aqui')
+    expect(html).toContain('Martevi:')
+    expect(html).toMatch(/<em[^>]*>Democratizando<\/em>.*<span[^>]*>o acesso à cultura<\/span>/)
+    expect(html).toContain('A arte não deveria conhecer barreiras sociais, econômicas ou geográficas.')
+    expect(html).toContain('O acesso à cultura não deve conhecer barreiras')
+    expect(html).toContain('Sua experiência começa aqui.')
+    expect(html).toMatch(/<span[^>]*>com traduções para o português realizadas por redes neurais\.<\/span>/)
+    expect(html).not.toContain('Passe o cursor ou navegue pelo teclado')
+    expect(html).not.toContain('Explorar os museus')
+    expect(html).not.toContain('Montar uma obra')
+    expect(html).not.toContain('museus abertos para olhar devagar')
+  })
+
+  it('renders the first museum from the atrium catalog and carousel controls', () => {
+    const html = renderRoute('/')
+
+    expect(html).toContain('um átrio · sete acervos')
+    expect(html).toMatch(new RegExp(`<figcaption[^>]*>${MUSEUMS[0].name}</figcaption>`))
+    expect(html).toContain('aria-label="Museu anterior"')
+    expect(html).toContain('aria-label="Próximo museu"')
+    expect(html).toContain('Pausar rotação')
   })
 
   it('integrates the three requested destinations with the router', () => {
@@ -36,7 +54,7 @@ describe('landing routes', () => {
     const html = renderRoute('/tarefa-do-daiki')
 
     expect(html).toContain('tarefa do daiki')
-    expect(html).not.toContain('A visita começa aqui')
+    expect(html).not.toContain('Sua experiência começa aqui')
   })
 })
 
