@@ -77,8 +77,8 @@ export default function HomePage() {
                   fontSize: 'clamp(58px, 9.6vw, 148px)',
                   animation: 'landing-title-in 1s cubic-bezier(.66,0,.25,1) both',
                   '@keyframes landing-title-in': {
-                    from: { opacity: 0, transform: 'translateY(22px)' },
-                    to: { opacity: 1, transform: 'translateY(0)' },
+                    from: { transform: 'translateY(22px)' },
+                    to: { transform: 'translateY(0)' },
                   },
                   '@media (prefers-reduced-motion: reduce)': { animation: 'none' },
                 }}

@@ -42,8 +42,8 @@ export function LandingMuseumIllustration() {
           color: 'text.primary',
           animation: 'landing-facade-in 1.25s cubic-bezier(.66,0,.25,1) both',
           '@keyframes landing-facade-in': {
-            from: { opacity: 0, transform: 'translateY(26px)' },
-            to: { opacity: 1, transform: 'translateY(0)' },
+            from: { transform: 'translateY(26px)' },
+            to: { transform: 'translateY(0)' },
           },
           '@media (prefers-reduced-motion: reduce)': { animation: 'none' },
         }}
