@@ -9,6 +9,7 @@
   "include": [
     "../tests/unit/**/*.test.ts",
     "../tests/unit/**/*.test.tsx",
+    "../tests/integration/**/*.test.tsx",
     "./vitest.config.ts"
   ],
   "exclude": []
