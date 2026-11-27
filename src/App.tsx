@@ -17,6 +17,21 @@ function MuseumRoute() {
   return <MuseumPage key={providerId} />
 }
 
+export function AppRoutes() {
+  return (
+    <Routes>
+      <Route path="/" element={<HomePage />} />
+      <Route path="/atrio" element={<AtriumPage />} />
+      <Route path="/busca" element={<SearchPage />} />
+      <Route path="/museu/:providerId" element={<MuseumRoute />} />
+      <Route path="/obra/:artworkId" element={<ArtworkPage />} />
+      <Route path="/quebra-cabeca" element={<PuzzlePage />} />
+      <Route path="/tarefa-do-daiki" element={<DaikiPage />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
+  )
+}
+
 function App() {
   useEffect(() => {
     warmUpBackend()
@@ -24,16 +39,7 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/atrio" element={<AtriumPage />} />
-        <Route path="/busca" element={<SearchPage />} />
-        <Route path="/museu/:providerId" element={<MuseumRoute />} />
-        <Route path="/obra/:artworkId" element={<ArtworkPage />} />
-        <Route path="/quebra-cabeca" element={<PuzzlePage />} />
-        <Route path="/tarefa-do-daiki" element={<DaikiPage />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+      <AppRoutes />
     </BrowserRouter>
   )
 }
