@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { Box, Button, Stack, Typography } from '@mui/material'
 
 import { fetchPuzzles } from '../api/puzzles'
+import { HomeLink } from '../components/HomeLink'
 import { ArtworkCatalog } from '../components/jigsaw/artworks'
 import JigsawPuzzle from './JigsawPuzzle'
 
@@ -44,8 +45,11 @@ export default function PuzzlePage() {
   if (state.kind === 'ready') return <JigsawPuzzle catalog={state.catalog} />
 
   return (
-    <Box sx={{ minHeight: '100vh', display: 'grid', placeItems: 'center', p: 3 }}>
-      <Stack spacing={2} sx={{ maxWidth: '44ch', textAlign: 'center' }}>
+    <Box component="main" sx={{ minHeight: '100vh', display: 'grid', gridTemplateRows: '1fr auto 1fr', p: 3 }}>
+      <Box component="header" sx={{ justifySelf: 'start', alignSelf: 'start' }}>
+        <HomeLink />
+      </Box>
+      <Stack spacing={2} sx={{ justifySelf: 'center', maxWidth: '44ch', textAlign: 'center' }}>
         {state.kind === 'loading' ? (
           <>
             <Typography variant="overline">carregando o acervo…</Typography>
