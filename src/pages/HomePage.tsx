@@ -2,7 +2,7 @@ import { useReducer } from 'react'
 import { Box, Button, Container, Stack, Typography } from '@mui/material'
 import { Link as RouterLink } from 'react-router-dom'
 import { DestinationShowcase } from '../components/landing/DestinationShowcase'
-import { LandingMuseumIllustration } from '../components/landing/LandingMuseumIllustration'
+import { LandingMuseumCarousel } from '../components/landing/LandingMuseumCarousel'
 import { INITIAL_LANDING_STATE, reduceLandingState } from '../landing/controller'
 import { LANDING_DESTINATIONS, MISSION_PILLARS } from '../landing/content'
 
@@ -57,13 +57,12 @@ export default function HomePage() {
         >
           <Box
             sx={{
-              minHeight: { xs: 490, md: 650 },
-              py: { xs: 7, sm: 9, md: 11 },
+              py: { xs: 6, sm: 8, md: 10 },
               pr: { md: 6 },
               display: 'flex',
               flexDirection: 'column',
-              justifyContent: 'space-between',
-              gap: 6,
+              justifyContent: 'center',
+              gap: { xs: 3, md: 4 },
             }}
           >
             <Box>
@@ -73,8 +72,10 @@ export default function HomePage() {
               <Typography
                 variant="h1"
                 sx={{
-                  maxWidth: '8.4ch',
-                  fontSize: 'clamp(58px, 9.6vw, 148px)',
+                  maxWidth: '16ch',
+                  fontSize: 'clamp(2rem, 9.5vw, 4.75rem)',
+                  lineHeight: 1,
+                  overflowWrap: 'anywhere',
                   animation: 'landing-title-in 1s cubic-bezier(.66,0,.25,1) both',
                   '@keyframes landing-title-in': {
                     from: { transform: 'translateY(22px)' },
@@ -83,29 +84,28 @@ export default function HomePage() {
                   '@media (prefers-reduced-motion: reduce)': { animation: 'none' },
                 }}
               >
-                A arte não cabe num só{' '}
-                <Box component="em" sx={{ color: 'primary.main', fontStyle: 'italic' }}>
-                  lugar.
+                <Box component="span" sx={{ display: 'block', mb: 1, fontSize: '1.25em' }}>
+                  Martevi:
                 </Box>
+                <Box component="em" sx={{ color: 'primary.main', fontStyle: 'italic' }}>
+                  Democratizando
+                </Box>
+                {' '}
+                <Box component="span" sx={{ display: 'inline-block' }}>o acesso à cultura</Box>
               </Typography>
             </Box>
 
             <Box sx={{ maxWidth: 610 }}>
               <Typography variant="body1" sx={{ fontSize: { xs: 16, sm: 18 }, lineHeight: 1.65 }}>
-                O martevi reúne acervos abertos de grandes museus em uma visita interativa. Para quem
-                não pode atravessar o oceano — e para quem quer entender uma obra além da miniatura.
+                O Martevi reúne acervos abertos de grandes museus em uma visita interativa. Para quem
+                não pode atravessar o oceano, mas quer experimentar tudo de perto.
               </Typography>
-              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} sx={{ mt: 3, alignItems: { sm: 'center' } }}>
-                <Button component={RouterLink} to="/atrio" variant="contained">
-                  Explorar os museus
-                </Button>
-                <Button component={RouterLink} to="/quebra-cabeca" variant="outlined">
-                  Montar uma obra
-                </Button>
-              </Stack>
+              <Typography variant="body1" sx={{ mt: 2, fontSize: { xs: 16, sm: 18 }, lineHeight: 1.65 }}>
+                A arte não deveria conhecer barreiras sociais, econômicas ou geográficas.
+              </Typography>
             </Box>
           </Box>
-          <LandingMuseumIllustration />
+          <LandingMuseumCarousel />
         </Box>
 
         <Box
@@ -126,7 +126,7 @@ export default function HomePage() {
           >
             <Typography variant="overline">por que existe</Typography>
             <Typography id="proposito-titulo" variant="h2" sx={{ fontSize: 'clamp(38px, 6vw, 78px)', maxWidth: '15ch' }}>
-              Distância não deveria decidir quem pode ver de perto.
+              O acesso à cultura não deve conhecer barreiras
             </Typography>
           </Box>
 
@@ -156,6 +156,12 @@ export default function HomePage() {
                 </Typography>
                 <Typography variant="body1" sx={{ mt: 2, maxWidth: '43ch', fontSize: 16 }}>
                   {pillar.description}
+                  {pillar.highlight && (
+                    <>
+                      {' '}
+                      <Box component="span" sx={{ color: 'primary.main' }}>{pillar.highlight}</Box>
+                    </>
+                  )}
                 </Typography>
               </Box>
             ))}
@@ -168,24 +174,10 @@ export default function HomePage() {
           aria-labelledby="experiencias-titulo"
           sx={{ pt: { xs: 2, md: 3 }, pb: { xs: 9, md: 14 }, scrollMarginTop: 24 }}
         >
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: { xs: 'column', md: 'row' },
-              justifyContent: 'space-between',
-              alignItems: { md: 'end' },
-              gap: 3,
-              mb: { xs: 5, md: 7 },
-            }}
-          >
-            <Box>
-              <Typography variant="overline">escolha uma entrada</Typography>
-              <Typography id="experiencias-titulo" variant="h2" sx={{ mt: 1.5, fontSize: 'clamp(42px, 7vw, 88px)' }}>
-                A visita começa aqui.
-              </Typography>
-            </Box>
-            <Typography variant="body1" sx={{ maxWidth: '42ch', fontSize: 16 }}>
-              Passe o cursor ou navegue pelo teclado para conhecer cada caminho. Um clique leva direto à experiência.
+          <Box sx={{ mb: { xs: 5, md: 7 } }}>
+            <Typography variant="overline">escolha uma entrada</Typography>
+            <Typography id="experiencias-titulo" variant="h2" sx={{ mt: 1.5, fontSize: 'clamp(42px, 7vw, 88px)' }}>
+              Sua experiência começa aqui.
             </Typography>
           </Box>
           <DestinationShowcase
@@ -202,15 +194,11 @@ export default function HomePage() {
             borderTop: '4px double',
             borderColor: 'text.primary',
             display: 'flex',
-            flexDirection: { xs: 'column', sm: 'row' },
-            alignItems: { xs: 'flex-start', sm: 'center' },
-            justifyContent: 'space-between',
-            gap: 1,
+            alignItems: 'center',
             py: 3,
           }}
         >
           <Typography variant="h5" sx={{ fontSize: 24 }}>martevi</Typography>
-          <Typography variant="overline">museus abertos para olhar devagar</Typography>
         </Box>
       </Container>
     </Box>

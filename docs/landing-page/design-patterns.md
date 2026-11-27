@@ -14,7 +14,7 @@
 - **Model:** `src/landing/content.ts`, especially `LandingDestination`,
   `MISSION_PILLARS`, and `LANDING_DESTINATIONS`.
 - **View:** `HomePage`, `DestinationShowcase`,
-  `LandingMuseumIllustration`, and `DaikiPage`.
+  `LandingMuseumCarousel`, and `DaikiPage`.
 - **Controller:** `reduceLandingState` and `INITIAL_LANDING_STATE` in
   `src/landing/controller.ts`. `HomePage` connects the controller with
   `useReducer` and dispatches `destination-selected` actions.
