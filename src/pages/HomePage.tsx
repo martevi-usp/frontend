@@ -171,7 +171,11 @@ export default function HomePage() {
         >
           <Box sx={{ mb: { xs: 5, md: 7 } }}>
             <Typography variant="overline">escolha uma entrada</Typography>
-            <Typography id="experiencias-titulo" variant="h2" sx={{ mt: 1.5, fontSize: 'clamp(42px, 7vw, 88px)' }}>
+            <Typography
+              id="experiencias-titulo"
+              variant="h2"
+              sx={{ mt: 1.5, fontSize: 'clamp(42px, 7vw, 88px)', textWrap: { xs: 'balance', md: 'wrap' } }}
+            >
               Sua experiência começa aqui.
             </Typography>
           </Box>
