@@ -1,7 +1,8 @@
 # martevi — frontend
 
-React + TypeScript, scaffolded with Vite. Two screens, chosen by the URL path
-(`src/App.tsx`): a placeholder home page and the jigsaw puzzle.
+React + TypeScript, scaffolded with Vite. Routes in `src/App.tsx` cover the
+editorial landing page, museum atrium and search flow, gallery view, jigsaw
+puzzle, and provisional feature pages.
 
 ```bash
 npm install
@@ -16,6 +17,7 @@ npm test           # unit tests (Vitest)
 config/   vite, vitest and tsc config — see below
 tests/
   unit/   Vitest — pure logic, no DOM (e.g. tests/unit/geometry.test.ts)
+  integration/  Vitest — route/component integration rendered in Node
 src/      the app itself
 ```
 
