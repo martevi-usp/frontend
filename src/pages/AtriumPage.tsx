@@ -27,9 +27,9 @@ export default function AtriumPage() {
     >
       <Box sx={{ flexShrink: 0, pt: { xs: 2.5, sm: 4 }, pb: { xs: 2, sm: 3 } }}>
         <Container maxWidth={false} sx={{ px: { xs: 2, sm: 4 } }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
-            <Typography variant="overline">martevi</Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 1.5 }}>
             <HomeLink />
+            <Typography variant="overline">martevi</Typography>
           </Box>
           <Typography variant="h1" sx={{ fontSize: 'clamp(28px, 6.5vw, 60px)', mt: 1 }}>
             Sete museus, um <Box component="em" sx={{ fontStyle: 'italic', color: 'primary.main' }}>átrio</Box>.
