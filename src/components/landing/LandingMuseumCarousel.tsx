@@ -1,19 +1,17 @@
-import { Box, Button, IconButton, Typography, useMediaQuery } from '@mui/material'
+import { Box, IconButton, Typography, useMediaQuery } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { ArrowIcon } from '../icons'
 import { MUSEUMS } from '../museums/catalog'
 import { MuseumBuilding } from '../museums/MuseumBuilding'
 
-const ROTATION_INTERVAL_MS = 5000
+const ROTATION_INTERVAL_MS = 3000
 
 export function LandingMuseumCarousel() {
   const [index, setIndex] = useState(0)
-  const [paused, setPaused] = useState(false)
   const [hovered, setHovered] = useState(false)
   const [focused, setFocused] = useState(false)
   const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)')
-  const canRotate = !prefersReducedMotion && !paused
-  const isRotating = canRotate && !hovered && !focused
+  const isRotating = !prefersReducedMotion && !hovered && !focused
   const museum = MUSEUMS[index]
 
   useEffect(() => {
@@ -78,11 +76,6 @@ export function LandingMuseumCarousel() {
         <IconButton onClick={() => move(-1)} aria-label="Museu anterior" sx={{ width: 44, height: 44 }}>
           <ArrowIcon direction="left" width={18} />
         </IconButton>
-        {!prefersReducedMotion && (
-          <Button onClick={() => setPaused((current) => !current)} variant="outlined" size="small">
-            {paused ? 'Retomar rotação' : 'Pausar rotação'}
-          </Button>
-        )}
         <IconButton onClick={() => move(1)} aria-label="Próximo museu" sx={{ width: 44, height: 44 }}>
           <ArrowIcon direction="right" width={18} />
         </IconButton>
