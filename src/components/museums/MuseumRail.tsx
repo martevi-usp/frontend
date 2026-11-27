@@ -1,5 +1,5 @@
 import { Box, IconButton, Typography } from '@mui/material'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { MUSEUMS } from './catalog'
 import { ArrowIcon } from '../icons'
 import { MuseumCard } from './MuseumCard'
@@ -46,12 +46,31 @@ export function MuseumRail() {
     }
   }, [])
 
-  const goTo = (index: number) => {
+  const move = useCallback((step: -1 | 1) => {
+    const index = Math.max(0, Math.min(MUSEUMS.length - 1, focused + step))
+    if (index === focused) return
+
     const rail = railRef.current
     const card = cardRefs.current[index]
     if (!rail || !card) return
     rail.scrollTo({ left: card.offsetLeft + card.offsetWidth / 2 - rail.clientWidth / 2, behavior: 'smooth' })
-  }
+  }, [focused])
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return
+      if (event.defaultPrevented || event.isComposing || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return
+
+      const target = event.target
+      if (target instanceof HTMLElement && (target.isContentEditable || target.closest('input, textarea, select'))) return
+
+      event.preventDefault()
+      move(event.key === 'ArrowLeft' ? -1 : 1)
+    }
+
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [move])
 
   return (
     <Box sx={{ position: 'relative', display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
@@ -103,7 +122,7 @@ export function MuseumRail() {
         </Box>
         <Box sx={{ display: 'flex', gap: 0.5 }}>
           <IconButton
-            onClick={() => goTo(Math.max(0, focused - 1))}
+            onClick={() => move(-1)}
             disabled={focused === 0}
             aria-label="Museu anterior"
             size="small"
@@ -112,7 +131,7 @@ export function MuseumRail() {
             <ArrowIcon direction="left" width={15} />
           </IconButton>
           <IconButton
-            onClick={() => goTo(Math.min(MUSEUMS.length - 1, focused + 1))}
+            onClick={() => move(1)}
             disabled={focused === MUSEUMS.length - 1}
             aria-label="Próximo museu"
             size="small"
