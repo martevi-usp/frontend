@@ -5,26 +5,32 @@ import { MUSEUMS } from '../museums/catalog'
 import { MuseumBuilding } from '../museums/MuseumBuilding'
 
 const ROTATION_INTERVAL_MS = 3000
+const MANUAL_PAUSE_MS = 6000
 
 export function LandingMuseumCarousel() {
   const [index, setIndex] = useState(0)
   const [hovered, setHovered] = useState(false)
-  const [focused, setFocused] = useState(false)
+  const [pausedByFocus, setPausedByFocus] = useState(false)
+  const [manualSelection, setManualSelection] = useState(false)
   const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)')
-  const isRotating = !prefersReducedMotion && !hovered && !focused
+  const canRotate = !prefersReducedMotion && !hovered && !pausedByFocus
   const museum = MUSEUMS[index]
 
   useEffect(() => {
-    if (!isRotating) return
+    if (!canRotate) return
 
-    const timer = window.setInterval(() => {
+    const timer = window.setTimeout(() => {
+      setManualSelection(false)
       setIndex((current) => (current + 1) % MUSEUMS.length)
-    }, ROTATION_INTERVAL_MS)
+    }, manualSelection ? MANUAL_PAUSE_MS : ROTATION_INTERVAL_MS)
 
-    return () => window.clearInterval(timer)
-  }, [isRotating])
+    return () => window.clearTimeout(timer)
+  }, [canRotate, index, manualSelection])
 
   function move(step: number) {
+    // Activation replaces the focus pause with a timed pause.
+    setPausedByFocus(false)
+    setManualSelection(true)
     setIndex((current) => (current + step + MUSEUMS.length) % MUSEUMS.length)
   }
 
@@ -32,11 +38,9 @@ export function LandingMuseumCarousel() {
     <Box
       component="section"
       aria-labelledby="landing-museums-title"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      onFocus={() => setFocused(true)}
+      onFocus={() => setPausedByFocus(true)}
       onBlur={(event) => {
-        if (!event.currentTarget.contains(event.relatedTarget)) setFocused(false)
+        if (!event.currentTarget.contains(event.relatedTarget)) setPausedByFocus(false)
       }}
       sx={{
         display: 'flex',
@@ -55,7 +59,17 @@ export function LandingMuseumCarousel() {
         um átrio · sete acervos
       </Typography>
 
-      <Box component="figure" aria-live={isRotating ? 'off' : 'polite'} sx={{ m: 0, textAlign: 'center' }}>
+      <Box
+        component="figure"
+        aria-live={canRotate && !manualSelection ? 'off' : 'polite'}
+        onPointerEnter={(event) => {
+          if (event.pointerType === 'mouse') setHovered(true)
+        }}
+        onPointerLeave={(event) => {
+          if (event.pointerType === 'mouse') setHovered(false)
+        }}
+        sx={{ m: 0, textAlign: 'center' }}
+      >
         <MuseumBuilding providerId={museum.id} style={{ display: 'block', width: '100%', height: 'auto' }} />
         <Typography
           component="figcaption"
